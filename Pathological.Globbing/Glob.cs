@@ -137,16 +137,16 @@ public sealed class Glob(string basePath)
             matcher.AddExcludePatterns(ignorePatterns);
         }
 
+        await foreach (var file in EnumerateFilesAsync(Matches, cancellationToken))
+        {
+            yield return file;
+        }
+
         bool Matches(string filePath)
         {
             var result = matcher.Match(basePath, filePath);
 
             return result.HasMatches;
-        }
-
-        await foreach (var file in EnumerateFilesAsync(Matches, cancellationToken))
-        {
-            yield return file;
         }
     }
 
@@ -154,51 +154,58 @@ public sealed class Glob(string basePath)
         Func<string, bool> matches,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var options = new EnumerationOptions
-        {
-            RecurseSubdirectories = true,
-            MatchCasing = MatchCasing.CaseInsensitive
-        };
+        var channel = Channel.CreateUnbounded<string>();
 
-        var fileQueue = new AsyncQueue<string>();
+        var writer = channel.Writer;
 
-        var readingTask = Task.Run(async () =>
-        {
-            try
-            {
-                await Parallel.ForEachAsync(
-                    Directory.EnumerateFiles(basePath, "*", options),
-                    async (filePath, token) =>
-                    {
-                        if (matches(filePath) is false)
-                        {
-                            return;
-                        }
+        var writeTask = Task.Run(
+            async () => await WriteFilesAsync(basePath, writer, matches, cancellationToken),
+            cancellationToken);
 
-                        await fileQueue.EnqueueAsync(filePath);
-                    });
-            }
-            finally
-            {
-                fileQueue.Complete();
-            }
-        },
-        cancellationToken);
+        var reader = channel.Reader;
 
-        await foreach (var filePath in ReadAsync(fileQueue))
+        await foreach (var filePath in reader.ReadAllAsync(cancellationToken))
         {
             yield return filePath;
         }
 
-        await readingTask; // Ensure the reading task completes.
+        await writeTask; // Ensure completion (capturing exceptions).
     }
 
-    private static async IAsyncEnumerable<string> ReadAsync(
-        AsyncQueue<string> fileQueue)
+    private static async ValueTask WriteFilesAsync(
+        string basePath,
+        ChannelWriter<string> writer,
+        Func<string, bool> matches,
+        CancellationToken cancellationToken)
     {
-        await foreach (var filePath in fileQueue.DequeueAllAsync())
+        try
         {
-            yield return filePath;
+            var options = new EnumerationOptions
+            {
+                RecurseSubdirectories = true,
+                MatchCasing = MatchCasing.CaseInsensitive
+            };
+
+            var files =
+                Directory.EnumerateFiles(basePath, "*", options);
+
+            foreach (var filePath in files)
+            {
+                if (matches(filePath) is false)
+                {
+                    continue;
+                }
+
+                await writer.WaitToWriteAsync(cancellationToken);
+
+                writer.TryWrite(filePath);
+            }
+
+            writer.Complete();
+        }
+        catch (Exception ex)
+        {
+            writer.TryComplete(ex);
         }
     }
 }
