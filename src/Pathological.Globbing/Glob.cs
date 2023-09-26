@@ -51,7 +51,23 @@ public sealed class Glob(string basePath = ".")
     /// <returns>An enumerable collection of file paths that match the specified patterns and do not match the specified ignore patterns.</returns>
     public IEnumerable<string> GetMatches(string[] patterns, string[] ignorePatterns)
     {
+        var matcher = GetMatcher(patterns, ignorePatterns);
+
+        return matcher.GetResultsInFullPath(basePath);
+    }
+
+    private static Matcher GetMatcher(string[] patterns, string[] ignorePatterns)
+    {
         var matcher = new Matcher();
+
+        ArgumentNullException.ThrowIfNull(patterns);
+        ArgumentNullException.ThrowIfNull(ignorePatterns);
+
+        if (patterns is { Length: 0 } && ignorePatterns is { Length: 0 })
+        {
+            throw new ArgumentException(
+                "At least one pattern must be specified.");
+        }
 
         if (patterns is { Length: > 0 })
         {
@@ -63,7 +79,7 @@ public sealed class Glob(string basePath = ".")
             matcher.AddExcludePatterns(ignorePatterns);
         }
 
-        return matcher.GetResultsInFullPath(basePath);
+        return matcher;
     }
 
     /// <summary>
@@ -126,17 +142,7 @@ public sealed class Glob(string basePath = ".")
         string[] ignorePatterns,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var matcher = new Matcher();
-
-        if (patterns is { Length: > 0 })
-        {
-            matcher.AddIncludePatterns(patterns);
-        }
-
-        if (ignorePatterns is { Length: > 0 })
-        {
-            matcher.AddExcludePatterns(ignorePatterns);
-        }
+        var matcher = GetMatcher(patterns, ignorePatterns);
 
         await foreach (var file in EnumerateFilesAsync(Matches, cancellationToken))
         {
@@ -187,8 +193,7 @@ public sealed class Glob(string basePath = ".")
                 MatchCasing = MatchCasing.CaseInsensitive
             };
 
-            var files =
-                Directory.EnumerateFiles(basePath, "*", options);
+            var files = Directory.EnumerateFiles(basePath, "*", options);
 
             foreach (var filePath in files)
             {
