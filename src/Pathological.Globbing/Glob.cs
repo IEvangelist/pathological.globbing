@@ -171,7 +171,9 @@ public sealed class Glob(string basePath = ".")
 
         var reader = channel.Reader;
 
-        await foreach (var filePath in reader.ReadAllAsync(cancellationToken))
+        var files = reader.ReadAllAsync(cancellationToken);
+
+        await foreach (var filePath in files)
         {
             yield return filePath;
         }
