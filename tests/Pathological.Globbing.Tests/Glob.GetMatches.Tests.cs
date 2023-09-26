@@ -3,7 +3,7 @@
 
 namespace Pathological.Globbing.Tests;
 
-public partial class GlobTests
+public sealed partial class GlobTests
 {
     [Fact]
     public void GetMatchesFromDefaultBaseReturnsFiles()
@@ -25,5 +25,18 @@ public partial class GlobTests
             pattern: "*.cs");
 
         Assert.NotEmpty(files);
+    }
+
+    [Fact]
+    public void GetMatchesHonorsPatternsAndIgnorePatterns()
+    {
+        var glob = new Glob("../../../");
+
+        var files = glob.GetMatches(
+            pattern: "*.*", ignorePattern: "*.csproj");
+
+        Assert.NotEmpty(files);
+        Assert.DoesNotContain(
+            files, file => file.EndsWith(".csproj"));
     }
 }
