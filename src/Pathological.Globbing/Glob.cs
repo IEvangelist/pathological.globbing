@@ -6,7 +6,8 @@ namespace Pathological.Globbing;
 /// <summary>
 /// Provides methods for matching file paths against glob patterns.
 /// </summary>
-public sealed class Glob(string basePath)
+/// <param name="basePath"></param>
+public sealed class Glob(string basePath = ".")
 {
     /// <summary>
     /// Returns an enumerable collection of file or directory paths that match a specified pattern and ignore pattern.
