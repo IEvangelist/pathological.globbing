@@ -59,6 +59,17 @@ public sealed partial class Glob(string basePath = ".", bool isCaseInsensitive =
         GetMatches(patterns, ignorePatterns: []);
 
     /// <summary>
+    /// Returns an enumerable collection of strings that match the specified globbing patterns,
+    /// while excluding any matches that also match the specified ignore pattern.
+    /// </summary>
+    /// <param name="patterns">An array of globbing patterns to match against.</param>
+    /// <param name="ignorePattern">A globbing pattern to exclude from the matches.</param>
+    /// <returns>An enumerable collection of strings that match the specified globbing patterns,
+    /// while excluding any matches that also match the specified ignore pattern.</returns>
+    public IEnumerable<string> GetMatches(string[] patterns, string ignorePattern) =>
+        GetMatches(patterns, ignorePatterns: [ignorePattern]);
+
+    /// <summary>
     /// Gets a collection of file paths that match the specified patterns and do not match the specified ignore patterns.
     /// </summary>
     /// <param name="patterns">An array of glob patterns to match against.</param>

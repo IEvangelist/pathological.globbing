@@ -6,12 +6,12 @@ namespace Pathological.Globbing;
 public sealed partial class Glob
 {
     /// <summary>
-    /// Asynchronously gets all file and directory matches for the specified ignorePattern, while optionally ignoring specified patterns.
+    /// Asynchronously returns an <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing pattern, while ignoring the specified ignore pattern.
     /// </summary>
     /// <param name="pattern">The ignorePattern to match against.</param>
     /// <param name="ignorePattern">The ignorePattern to ignore.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
-    /// <returns>An asynchronous enumerable of all file and directory matches for the specified ignorePattern.</returns>
+    /// <returns>An <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing pattern, while ignoring the specified ignore pattern.</returns>
     public IAsyncEnumerable<string> GetMatchesAsync(
         string pattern,
         string ignorePattern,
@@ -19,12 +19,12 @@ public sealed partial class Glob
         GetMatchesAsync(patterns: [pattern], ignorePatterns: [ignorePattern], cancellationToken);
 
     /// <summary>
-    /// Asynchronously retrieves a collection of file or directory paths that match the specified ignorePattern.
+    /// Asynchronously returns an <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing pattern, while ignoring the specified ignore patterns.
     /// </summary>
     /// <param name="pattern">The ignorePattern to match against file or directory paths.</param>
     /// <param name="ignorePatterns">An array of patterns to ignore when searching for matches.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
-    /// <returns>An asynchronous enumerable collection of file or directory paths that match the specified ignorePattern.</returns>
+    /// <returns>An <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing pattern, while ignoring the specified ignore patterns.</returns>
     public IAsyncEnumerable<string> GetMatchesAsync(
         string pattern,
         string[] ignorePatterns,
@@ -32,34 +32,47 @@ public sealed partial class Glob
         GetMatchesAsync(patterns: [pattern], ignorePatterns, cancellationToken);
 
     /// <summary>
-    /// Asynchronously returns an enumerable collection of file or directory paths that match the specified globbing ignorePattern.
+    /// Asynchronously returns an <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing pattern.
     /// </summary>
     /// <param name="pattern">The globbing ignorePattern to match.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
-    /// <returns>An <see cref="IAsyncEnumerable{T}"/> that yields the matched file or directory paths.</returns>
+    /// <returns>An <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing pattern.</returns>
     public IAsyncEnumerable<string> GetMatchesAsync(
         string pattern,
         CancellationToken cancellationToken = default) =>
         GetMatchesAsync(patterns: [pattern], ignorePatterns: [], cancellationToken);
 
     /// <summary>
-    /// Asynchronously searches for files and directories that match the specified patterns.
+    /// Asynchronously returns an <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing patterns, while ignoring the specified ignore pattern.
     /// </summary>
     /// <param name="patterns">The patterns to search for.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the search.</param>
-    /// <returns>An asynchronous enumerable of file and directory paths that match the specified patterns.</returns>
+    /// <returns>An <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing patterns.</returns>
     public IAsyncEnumerable<string> GetMatchesAsync(
         string[] patterns,
         CancellationToken cancellationToken = default) =>
         GetMatchesAsync(patterns, ignorePatterns: [], cancellationToken);
 
     /// <summary>
-    /// Asynchronously enumerates all files that match the specified patterns and do not match the specified ignore patterns.
+    /// Asynchronously returns an <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing patterns, while ignoring the specified ignore pattern.
     /// </summary>
-    /// <param name="patterns">An array of globbing patterns to match.</param>
-    /// <param name="ignorePatterns">An array of globbing patterns to ignore.</param>
+    /// <param name="patterns">An array of globbing patterns to match against file and directory paths.</param>
+    /// <param name="ignorePattern">A globbing pattern to ignore when matching file and directory paths.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to cancel the operation.</param>
+    /// <returns>An <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing patterns, while ignoring the specified ignore pattern.</returns>
+    public IAsyncEnumerable<string> GetMatchesAsync(
+        string[] patterns,
+        string ignorePattern,
+        CancellationToken cancellationToken = default) =>
+        GetMatchesAsync(patterns, ignorePatterns: [ignorePattern], cancellationToken);
+
+    /// <summary>
+    /// Asynchronously returns an <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing patterns, while ignoring the specified ignore patterns.
+    /// </summary>
+    /// <param name="patterns">The patterns to match.</param>
+    /// <param name="ignorePatterns">The patterns to ignore.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
-    /// <returns>An asynchronous enumerable of file paths that match the specified patterns and do not match the specified ignore patterns.</returns>
+    /// <returns>An <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing patterns, while ignoring the specified ignore pattern.</returns>
     public async IAsyncEnumerable<string> GetMatchesAsync(
         string[] patterns,
         string[] ignorePatterns,
