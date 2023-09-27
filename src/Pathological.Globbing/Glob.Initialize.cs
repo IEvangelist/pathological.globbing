@@ -21,7 +21,7 @@ public sealed partial class Glob
         ValidateArguments(patterns, ignorePatterns);
 
         var matcher = new Matcher(
-            isCaseInsensitive
+            comparisonType: isCaseInsensitive
                 ? StringComparison.OrdinalIgnoreCase
                 : StringComparison.Ordinal);
 
@@ -40,22 +40,23 @@ public sealed partial class Glob
         static void ValidateArguments(string[] patterns, string[] ignorePatterns)
         {
             ArgumentNullException.ThrowIfNull(patterns);
-            ArgumentNullException.ThrowIfNull(ignorePatterns);
-
-            if (patterns is { Length: 0 } && ignorePatterns is { Length: 0 })
-            {
-                throw new ArgumentException(
-                    "At least one pattern or ignore pattern must be specified.");
-            }
 
             foreach (var pattern in patterns)
             {
                 ArgumentException.ThrowIfNullOrWhiteSpace(pattern);
             }
 
+            ArgumentNullException.ThrowIfNull(ignorePatterns);
+
             foreach (var ignorePattern in ignorePatterns)
             {
                 ArgumentException.ThrowIfNullOrWhiteSpace(ignorePattern);
+            }
+
+            if (patterns is { Length: 0 } && ignorePatterns is { Length: 0 })
+            {
+                throw new ArgumentException(
+                    "At least one pattern or ignore pattern must be specified.");
             }
         }
     }

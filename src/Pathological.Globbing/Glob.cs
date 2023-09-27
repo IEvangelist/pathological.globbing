@@ -14,7 +14,9 @@ namespace Pathological.Globbing;
 /// Whether or not to evaluate matches ignoring case sensitivity.
 /// Defaults to <see langword="true"/>.
 /// </param>
-public sealed partial class Glob(string basePath = ".", bool isCaseInsensitive = true)
+public sealed partial class Glob(
+    string basePath = GlobDefaults.BasePath,
+    bool isCaseInsensitive = GlobDefaults.IsCaseInsensitive)
 {
     /// <summary>
     /// Gets the base path used for globbing, as assigned from <paramref name="basePath"/>.

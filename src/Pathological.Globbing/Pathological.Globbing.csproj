@@ -11,4 +11,8 @@
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="8.0.0-rc.1.23419.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Pathological.Globbing.Tests" />
+  </ItemGroup>
+
 </Project>

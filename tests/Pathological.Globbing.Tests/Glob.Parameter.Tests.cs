@@ -6,6 +6,14 @@ namespace Pathological.Globbing.Tests;
 public sealed partial class GlobTests
 {
     [Fact]
+    public void GlobBasePathDefaultsToDot()
+    {
+        var glob = new Glob();
+
+        Assert.Equal(GlobDefaults.BasePath, glob.BasePath);
+    }
+
+    [Fact]
     public void GlobCtorThrowsOnNullBasePath()
     {
         Assert.Throws<ArgumentNullException>(
