@@ -6,9 +6,15 @@ namespace Pathological.Globbing;
 /// <summary>
 /// Provides methods for matching file paths against glob patterns.
 /// </summary>
-/// <param name="basePath">The base path to start the globbing search from.
-/// Defaults to <c>"."</c> which is the current directory.</param>
-public sealed partial class Glob(string basePath = ".")
+/// <param name="basePath">
+/// The base path to start the globbing search from.
+/// Defaults to <c>"."</c> which is the current directory.
+/// </param>
+/// <param name="isCaseInsensitive">
+/// Whether or not to evaluate matches ignoring case sensitivity.
+/// Defaults to <see langword="true"/>.
+/// </param>
+public sealed partial class Glob(string basePath = ".", bool isCaseInsensitive = true)
 {
     /// <summary>
     /// Gets the base path used for globbing, as assigned from <paramref name="basePath"/>.
@@ -60,7 +66,7 @@ public sealed partial class Glob(string basePath = ".")
     /// <returns>An enumerable collection of file paths that match the specified patterns and do not match the specified ignore patterns.</returns>
     public IEnumerable<string> GetMatches(string[] patterns, string[] ignorePatterns)
     {
-        var matcher = GetInitializedMatcher(patterns, ignorePatterns);
+        var matcher = GetInitializedMatcher(patterns, ignorePatterns, isCaseInsensitive);
 
         return matcher.GetResultsInFullPath(BasePath);
     }

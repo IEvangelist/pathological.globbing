@@ -28,6 +28,17 @@ public sealed partial class GlobTests
     }
 
     [Fact]
+    public void GetMatchesHonorsCaseSensitivity()
+    {
+        var glob = new Glob("../../../", isCaseInsensitive: false);
+
+        var files = glob.GetMatches(
+            pattern: "*.CS");
+
+        Assert.Empty(files);
+    }
+
+    [Fact]
     public void GetMatchesHonorsPatternsAndIgnorePatterns()
     {
         var glob = new Glob("../../../");

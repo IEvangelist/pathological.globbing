@@ -65,7 +65,7 @@ public sealed partial class Glob
         string[] ignorePatterns,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var matcher = GetInitializedMatcher(patterns, ignorePatterns);
+        var matcher = GetInitializedMatcher(patterns, ignorePatterns, isCaseInsensitive);
 
         await foreach (var filePath in EnumerateFilesAsync(
             filePath => Matches(matcher, BasePath, filePath), cancellationToken))
@@ -131,8 +131,6 @@ public sealed partial class Glob
 
         try
         {
-            // TODO: Consider exposing configuration to
-            // allow for customization of these options.
             var options = new EnumerationOptions
             {
                 RecurseSubdirectories = true,
