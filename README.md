@@ -1,14 +1,16 @@
-# Pathological: Globbing
+﻿# Pathological: Globbing
 
 [![.NET](https://github.com/IEvangelist/pathological.globbing/actions/workflows/dotnet.yml/badge.svg)](https://github.com/IEvangelist/pathological.globbing/actions/workflows/dotnet.yml)
 
-## Install
+Welcome to the Pathological Globbing library. This library is a wrapper around the `Microsoft.Extensions.FileSystemGlobbing` NuGet package, which provides a fast, efficient, and cross-platform globbing library for .NET. This library exposes the `Glob` type, which provides a simple API for matching file paths against globbing patterns.
+
+## 📦 Install
 
 ```
 dotnet add package Pathological.Globbing
 ```
 
-## Usage
+## *️⃣ Usage
 
 ```csharp
 using Pathological.Globbing;
@@ -24,7 +26,7 @@ foreach (var file in files)
 }
 ```
 
-### Streaming API
+### 📂 Streaming API
 
 ```csharp
 using Pathological.Globbing;
@@ -40,7 +42,7 @@ await foreach (var file in files)
 }
 ```
 
-## File-system globbing
+## 🔥 File-system globbing
 
 This library relies on the `Microsoft.Extensions.FileSystemGlobbing` NuGet package for file-system globbing.
 
