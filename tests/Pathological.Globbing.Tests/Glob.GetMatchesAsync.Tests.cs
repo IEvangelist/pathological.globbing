@@ -9,27 +9,7 @@ public sealed partial class GlobTests(TempFolderTestFixture fixture)
     [Fact]
     public async Task GetMatchesAsyncRespectsCancellationWithTimeSpanSignal()
     {
-        string[] files =
-        [
-            "text-file.txt", "markdown.md", "image.png",
-        ];
-
-        string[] folders =
-        [
-            "folder1", "folder2", "folder3",
-        ];
-
-        foreach (var folder in folders)
-        {
-            var folderPath = Path.Combine(fixture.TempFolder, folder);
-            Directory.CreateDirectory(folderPath);
-
-            foreach (var file in files)
-            {
-                var filePath = Path.Combine(folderPath, file);
-                await File.WriteAllTextAsync(filePath, null);
-            }
-        }
+        var files = await WriteTestFilesAsync(fixture);
 
         var glob = new Glob(fixture.TempFolder);
 
@@ -53,33 +33,13 @@ public sealed partial class GlobTests(TempFolderTestFixture fixture)
         catch (OperationCanceledException)
         {
             Assert.True(true);
-        }        
+        }
     }
 
     [Fact]
     public async Task GetMatchesAsyncRespectsCancellationToken()
     {
-        string[] files =
-        [
-            "text-file.txt", "markdown.md", "image.png",
-        ];
-
-        string[] folders =
-        [
-            "folder1", "folder2", "folder3",
-        ];
-
-        foreach (var folder in folders)
-        {
-            var folderPath = Path.Combine(fixture.TempFolder, folder);
-            Directory.CreateDirectory(folderPath);
-
-            foreach (var file in files)
-            {
-                var filePath = Path.Combine(folderPath, file);
-                await File.WriteAllTextAsync(filePath, null);
-            }
-        }
+        var files = await WriteTestFilesAsync(fixture);
 
         var glob = new Glob(fixture.TempFolder);
 
@@ -111,12 +71,29 @@ public sealed partial class GlobTests(TempFolderTestFixture fixture)
     [Fact]
     public async Task GetMatchesAsyncReturnsAllFiles()
     {
+        var files = await WriteTestFilesAsync(fixture);
+
+        var glob = new Glob(fixture.TempFolder);
+
+        var actualCount = 0;
+        await foreach (var file in glob.GetMatchesAsync(
+            patterns: ["**/*.md", "**/*.txt"], ignorePatterns: ["folder3"]))
+        {
+            ++actualCount;
+            Assert.Contains(Path.GetFileName(file), files);
+        }
+
+        Assert.Equal(4, actualCount);
+    }
+
+    private static async Task<string[]> WriteTestFilesAsync(TempFolderTestFixture fixture)
+    {
         string[] files =
         [
             "text-file.txt", "markdown.md", "image.png",
         ];
 
-        string[] folders = 
+        string[] folders =
         [
             "folder1", "folder2", "folder3",
         ];
@@ -133,16 +110,6 @@ public sealed partial class GlobTests(TempFolderTestFixture fixture)
             }
         }
 
-        var glob = new Glob(fixture.TempFolder);
-
-        var actualCount = 0;
-        await foreach (var file in glob.GetMatchesAsync(
-            patterns: ["**/*.md", "**/*.txt"], ignorePatterns: ["folder3"]))
-        {
-            ++actualCount;
-            Assert.Contains(Path.GetFileName(file), files);
-        }
-
-        Assert.Equal(4, actualCount);
+        return files;
     }
 }
