@@ -111,7 +111,7 @@ public sealed partial class Glob
         var writer = channel.Writer;
 
         var writeTask = Task.Run(
-            function: () => WriteFilesAsync(BasePath, writer, matches, cancellationToken),
+            function: () => WriteFilesAsync(BasePath, writer, matches, isCaseInsensitive, cancellationToken),
             cancellationToken);
 
         var reader = channel.Reader;
@@ -133,11 +133,13 @@ public sealed partial class Glob
     /// <param name="writer">The <see cref="ChannelWriter{T}"/> to write the file paths to.</param>
     /// <param name="matches">A function that determines whether a file path matches the specified pattern.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to cancel the operation.</param>
+    /// <param name="isCaseInsensitive">Whether or not to match with case-insensitivity.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     private static async Task WriteFilesAsync(
         string basePath,
         ChannelWriter<string> writer,
         Func<string, bool> matches,
+        bool isCaseInsensitive,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -147,8 +149,10 @@ public sealed partial class Glob
             var options = new EnumerationOptions
             {
                 RecurseSubdirectories = true,
-                MatchCasing = MatchCasing.CaseInsensitive,
                 IgnoreInaccessible = true,
+                MatchCasing = isCaseInsensitive
+                    ? MatchCasing.CaseInsensitive
+                    : MatchCasing.PlatformDefault
             };
 
             var files = Directory.EnumerateFiles(basePath, "*", options);
