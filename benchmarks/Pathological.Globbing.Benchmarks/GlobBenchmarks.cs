@@ -1,10 +1,14 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
+using System.IO.Abstractions;
 using BenchmarkDotNet.Attributes;
-using Pathological.Globbing;
 
-public class GlobBenchmarks
+namespace Pathological.Globbing.Benchmarks;
+
+[JsonExporterAttribute.Full]
+[JsonExporterAttribute.FullCompressed]
+public sealed class GlobBenchmarks
 {
     private DirectoryInfo? _directory;
 
@@ -98,6 +102,10 @@ public class GlobBenchmarks
     [Benchmark]
     public void GlobCsExpand()
     {
-        _ = Ganss.IO.Glob.Expand(pattern: Pattern, ignoreCase: true);
+        var fileSystem = new FileSystem();
+
+        fileSystem.Directory.SetCurrentDirectory(_directory!.FullName);
+
+        _ = Ganss.IO.Glob.ExpandNames(pattern: Pattern, ignoreCase: true);
     }
 }

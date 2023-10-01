@@ -2,5 +2,6 @@
 // Licensed under the MIT License.
 
 using BenchmarkDotNet.Running;
+using Pathological.Globbing.Benchmarks;
 
 BenchmarkRunner.Run<GlobBenchmarks>();
