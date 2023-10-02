@@ -15,25 +15,18 @@ public class GlobBenchmarks
     public string[] Patterns { get; } =
     [
         "./{**/?{/**/?{/**/?{/**/?,,,,},,,,},,,,},,,}/**/*.txt",
-        // "./{*/**/../{*/**/../{*/**/../{*/**/../{*/**,,,,},,,,},,,,},,,,},,,,}/*.txt",
         "./**/?/**/?/**/?/**/?/**/*.txt",
         "./**/[01]/**/[12]/**/[23]/**/[45]/**/*.txt",
         "./**/**/**/**/**/**/**/**/*.txt",
         "./**/*/**/*/**/*/**/*/**/*.txt",
-        // "./**/0/**/../[01]/**/0/../**/0/*.txt",
         "./**/0/**/0/**/*.txt",
         "./**/0/**/0/**/0/**/0/**/*.txt",
-        // "./*/**/../*/**/../*/**/../*/**/../*/**/../*/**/../*/**/../*/**/*.txt",
-        // "./*/**/../*/**/../*/**/../*/**/../*/**/*.txt",
-        // "./0/**/../1/**/../2/**/../3/**/../4/**/../5/**/../6/**/../7/**/*.txt",
         "{**/*.txt,**/?/**/*.txt,**/?/**/?/**/*.txt,**/?/**/?/**/?/**/*.txt,**/?/**/?/**/?/**/?/**/*.txt}",
         "{0000,0,1111,1}/{0000,0,1111,1}/{0000,0,1111,1}/**",
         "**",
-        // "**/..",
         "**/!(0|9).txt",
         "**/????/????/????/????/*.txt",
         "**/[0-9]/**/*.txt",
-        "**/*.txt",
         "**/*.txt",
         "**/*/*.txt",
         "**/*/**/*.txt",
@@ -96,7 +89,14 @@ public class GlobBenchmarks
     {
         var glob = new Glob(_directory!.FullName);
 
-        _ = glob.GetMatches(Pattern);
+        var matches = glob.GetMatches(Pattern).ToArray();
+        if (matches is { Length: 0 })
+        {
+            throw new($"""
+                Invalid benchmark!
+                No matches found for pattern: {Pattern}.
+                """);
+        }
     }
 
     [Benchmark]
@@ -106,6 +106,13 @@ public class GlobBenchmarks
 
         fileSystem.Directory.SetCurrentDirectory(_directory!.FullName);
 
-        _ = Ganss.IO.Glob.ExpandNames(pattern: Pattern, ignoreCase: true);
+        var names = Ganss.IO.Glob.ExpandNames(pattern: Pattern, ignoreCase: true).ToArray();
+        if (names is { Length: 0 })
+        {
+            throw new($"""
+                Invalid benchmark!
+                No matches found for pattern: {Pattern}.
+                """);
+        }
     }
 }
