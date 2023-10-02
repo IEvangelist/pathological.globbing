@@ -90,15 +90,15 @@ public class GlobBenchmarks
         var glob = new Glob(_directory!.FullName);
 
         var matches = glob.GetMatches(Pattern).ToArray();
-        if (matches is { Length: 0 })
+
+        return matches switch
         {
-            throw new($"""
+            { Length: 0 } => throw new($"""
                 Invalid benchmark!
                 No matches found for pattern: {Pattern}.
-                """);
-        }
-
-        return matches;
+                """),
+            _ => matches
+        };
     }
 
     [Benchmark]
@@ -109,14 +109,14 @@ public class GlobBenchmarks
         fileSystem.Directory.SetCurrentDirectory(_directory!.FullName);
 
         var names = Ganss.IO.Glob.ExpandNames(pattern: Pattern, ignoreCase: true).ToArray();
-        if (names is { Length: 0 })
+
+        return names switch
         {
-            throw new($"""
+            { Length: 0 } => throw new($"""
                 Invalid benchmark!
                 No matches found for pattern: {Pattern}.
-                """);
-        }
-
-        return names;
+                """),
+            _ => names
+        };
     }
 }
