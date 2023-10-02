@@ -85,7 +85,7 @@ public class GlobBenchmarks
     }
 
     [Benchmark]
-    public void GetMatches()
+    public string[] GetMatches()
     {
         var glob = new Glob(_directory!.FullName);
 
@@ -97,10 +97,12 @@ public class GlobBenchmarks
                 No matches found for pattern: {Pattern}.
                 """);
         }
+
+        return matches;
     }
 
     [Benchmark]
-    public void GlobCsExpand()
+    public string[] GlobCsExpand()
     {
         var fileSystem = new FileSystem();
 
@@ -114,5 +116,7 @@ public class GlobBenchmarks
                 No matches found for pattern: {Pattern}.
                 """);
         }
+
+        return names;
     }
 }
