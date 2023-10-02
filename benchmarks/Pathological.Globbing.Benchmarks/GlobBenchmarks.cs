@@ -8,7 +8,7 @@ namespace Pathological.Globbing.Benchmarks;
 
 [JsonExporterAttribute.Full]
 [JsonExporterAttribute.FullCompressed]
-public sealed class GlobBenchmarks
+public class GlobBenchmarks
 {
     private DirectoryInfo? _directory;
 
