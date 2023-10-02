@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   benchmark:
-    name: Run benchmarks
+    name: Run benchmark job
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,8 +18,8 @@ jobs:
           dotnet-version: 8.0.x
           dotnet-quality: preview
 
-      - name: CD to benchmarks
-        run: cd benchmarks/Pathological.Globbing.Benchmarks && dotnet run --exporters json --filter '*'
+      - name: Run benchmark step
+        run: cd benchmarks/Pathological.Globbing.Benchmarks && dotnet run -c Release --exporters json --filter '*'
 
       - name: Store benchmark result
         uses: rhysd/github-action-benchmark@v1
