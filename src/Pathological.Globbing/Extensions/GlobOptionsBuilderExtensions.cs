@@ -17,16 +17,12 @@ internal static class GlobOptionsBuilderExtensions
     {
         var options = builder.Build();
 
-        var wrapper = new DirectoryInfoWrapper(
-            directoryInfo: new DirectoryInfo(
-                path: options.BasePath));
-
         var matcher = new Matcher();
 
         matcher.AddIncludePatterns(options.Inclusions);
         matcher.AddExcludePatterns(options.Exclusions);
 
-        var result = matcher.Execute(wrapper);
+        var result = matcher.Execute(options.ToDirectoryInfo());
 
         return GlobEvaluationResult.FromPatternMatchingResult(result);
     }

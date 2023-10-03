@@ -1,9 +1,6 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Collections.Frozen;
-using System.Collections.Immutable;
-
 namespace Pathological.Globbing;
 
 /// <summary>
@@ -21,8 +18,14 @@ public sealed partial class Glob(
     string basePath = GlobDefaults.BasePath,
     bool isCaseInsensitive = GlobDefaults.IsCaseInsensitive) : IBasePathOption
 {
+    /// <summary>
+    /// Gets a set of patterns to include from the globbing search.
+    /// </summary>
     internal FrozenSet<string>? Inclusions { get; private set; }
 
+    /// <summary>
+    /// Gets a set of patterns to exclude from the globbing search.
+    /// </summary>
     internal FrozenSet<string>? Exclusions { get; private set; }
 
     /// <summary>

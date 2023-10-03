@@ -80,7 +80,7 @@ public class GlobOptionsBuilderTests
         var builder = new GlobOptionsBuilder();
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => builder.Build());
+        Assert.Throws<ArgumentException>(() => builder.Build());
     }
 
     [Fact]

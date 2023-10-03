@@ -1,8 +1,6 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Collections.Frozen;
-
 namespace Pathological.Globbing;
 
 public sealed partial class Glob

@@ -11,19 +11,19 @@ namespace Pathological.Globbing.Options;
 /// when creating a new instance of <see cref="GlobMatching"/>.
 /// </remarks>
 [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
-public readonly record struct GlobOptionsBuilder(
-    in string BasePath = GlobDefaults.BasePath,
-    in bool IsCaseInsensitive = GlobDefaults.IsCaseInsensitive) : IBasePathOption
+public record class GlobOptionsBuilder(
+    string BasePath = GlobDefaults.BasePath,
+    bool IsCaseInsensitive = GlobDefaults.IsCaseInsensitive) : IBasePathOption
 {
     /// <summary>
     /// Gets or sets the enumerable of glob patterns to match against.
     /// </summary>
-    public IEnumerable<string> Patterns { get; init; } = [];
+    internal IEnumerable<string> Patterns { get; init; } = [];
 
     /// <summary>
     /// Gets or sets the list of patterns to ignore when matching against file paths.
     /// </summary>
-    public IEnumerable<string> IgnorePatterns { get; init; } = [];
+    internal IEnumerable<string> IgnorePatterns { get; init; } = [];
 
     /// <summary>
     /// Concatenates two sequences and returns the concatenated sequence. If either of the input sequences is null, an empty sequence is used instead.
@@ -36,8 +36,7 @@ public readonly record struct GlobOptionsBuilder(
         IEnumerable<T>? source = null,
         IEnumerable<T>? other = null) =>
         [
-            ..(source ?? Enumerable.Empty<T>()),
-            ..(other ?? Enumerable.Empty<T>())
+            ..(source ?? []), ..(other ?? [])
         ];
 
     /// <summary>
@@ -45,7 +44,7 @@ public readonly record struct GlobOptionsBuilder(
     /// </summary>
     /// <param name="basePath">The base path to set.</param>
     /// <returns>A new instance of the <see cref="GlobOptionsBuilder"/> class with the specified base path.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="basePath"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="basePath"/> is <see langword="null" />.</exception>
     public GlobOptionsBuilder WithBasePath(string basePath) =>
         basePath is null
             ? throw new ArgumentNullException(nameof(basePath))
@@ -64,7 +63,7 @@ public readonly record struct GlobOptionsBuilder(
     /// </summary>
     /// <param name="pattern">The pattern to add.</param>
     /// <returns>A new <see cref="GlobOptionsBuilder"/> instance with the added pattern.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="pattern"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="pattern"/> is <see langword="null" />.</exception>
     public GlobOptionsBuilder WithPattern(string pattern) =>
         pattern is null
             ? throw new ArgumentNullException(nameof(pattern))
@@ -75,7 +74,7 @@ public readonly record struct GlobOptionsBuilder(
     /// </summary>
     /// <param name="patterns">The patterns to add.</param>
     /// <returns>A new <see cref="GlobOptionsBuilder"/> instance with the added patterns.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="patterns"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="patterns"/> is <see langword="null" />.</exception>
     public GlobOptionsBuilder WithPatterns(string[] patterns) =>
         patterns is null
             ? throw new ArgumentNullException(nameof(patterns))
@@ -86,7 +85,7 @@ public readonly record struct GlobOptionsBuilder(
     /// </summary>
     /// <param name="ignorePattern">The ignore pattern to add.</param>
     /// <returns>A new <see cref="GlobOptionsBuilder"/> instance with the ignore pattern added.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ignorePattern"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ignorePattern"/> is <see langword="null" />.</exception>
     public GlobOptionsBuilder WithIgnorePattern(string ignorePattern) =>
         ignorePattern is null
             ? throw new ArgumentNullException(nameof(ignorePattern))
@@ -97,7 +96,7 @@ public readonly record struct GlobOptionsBuilder(
     /// </summary>
     /// <param name="ignorePatterns">An array of ignore patterns to add.</param>
     /// <returns>A new <see cref="GlobOptionsBuilder"/> instance with the specified ignore patterns added.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ignorePatterns"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ignorePatterns"/> is <see langword="null" />.</exception>
     public GlobOptionsBuilder WithIgnorePatterns(string[] ignorePatterns) =>
         ignorePatterns is null
             ? throw new ArgumentNullException(nameof(ignorePatterns))
@@ -109,7 +108,7 @@ public readonly record struct GlobOptionsBuilder(
     /// potential to <see langword="throw"/>.
     /// </summary>
     /// <returns>A new <see cref="GlobOptions"/> instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when either <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when either <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">Thrown when both <paramref name="Patterns"/> and <paramref name="IgnorePatterns"/> are empty.</exception>
     /// <exception cref="ArgumentException">Thrown when any of the patterns in <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> 
     /// containers an empty, null or whitespace pattern.</exception>
@@ -120,12 +119,12 @@ public readonly record struct GlobOptionsBuilder(
         return new GlobOptions(
             BasePath,
             IsCaseInsensitive,
-            Inclusions: Patterns,
-            Exclusions: IgnorePatterns);
+            Inclusions: Patterns ?? [],
+            Exclusions: IgnorePatterns ?? []);
 
         static void ValidateArguments(
-            in IEnumerable<string> patterns,
-            in IEnumerable<string> ignorePatterns)
+            IEnumerable<string> patterns,
+            IEnumerable<string> ignorePatterns)
         {
             ArgumentNullException.ThrowIfNull(patterns);
 

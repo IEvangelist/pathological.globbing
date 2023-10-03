@@ -11,7 +11,7 @@ public interface IGlobEvaluator
     /// <summary>
     /// Gets the default instance of <see cref="IGlobEvaluator"/>.
     /// </summary>
-    public static IGlobEvaluator Default { get; } = new DefaultGlobEvaluator();
+    public static IGlobEvaluator Default { get; } = DefaultGlobEvaluator.Default;
 
     /// <summary>
     /// Evaluates the glob pattern using the specified <see cref="GlobOptionsBuilder"/>.
