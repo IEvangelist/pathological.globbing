@@ -150,9 +150,9 @@ public record class GlobOptionsBuilder(
             {
                 return enumerable switch
                 {
+                    Array array => array.Length is 0,
                     IList<string> list => list.Count is 0,
                     ICollection<string> c => c.Count is 0,
-                    Array array => array.Length is 0,
 
                     _ => enumerable.Any() is false
                 };

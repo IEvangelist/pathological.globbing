@@ -6,6 +6,20 @@ namespace Pathological.Globbing.Tests;
 public class GlobOptionsBuilderTests
 {
     [Fact]
+    public void WithIgnorePatternBuildsValidDefaultsTest()
+    {
+        var builder = new GlobOptionsBuilder()
+            .WithIgnorePattern("**/*.*");
+
+        var options = builder.Build();
+
+        Assert.Equal(GlobDefaults.BasePath, options.BasePath);
+        Assert.Equal(GlobDefaults.IsCaseInsensitive, options.IsCaseInsensitive);
+        Assert.Empty(options.Inclusions);
+        Assert.Single(options.Exclusions);
+    }
+
+    [Fact]
     public void WithBasePathNullThrowsArgumentNullException()
     {
         // Arrange
