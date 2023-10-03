@@ -3,7 +3,8 @@
 
 namespace Pathological.Globbing.Tests;
 
-public sealed partial class GlobTests(TempFolderTestFixture fixture)
+public sealed partial class GlobTests(
+    TempFolderTestFixture fixture)
     : IClassFixture<TempFolderTestFixture>
 {
     [Fact]

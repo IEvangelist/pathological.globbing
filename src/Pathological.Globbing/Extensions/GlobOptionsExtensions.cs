@@ -15,6 +15,20 @@ public static class GlobOptionsExtensions
     /// <returns>The <see cref="GlobEvaluationResult"/> instance.</returns>
     public static GlobEvaluationResult ExecuteEvaluation(this GlobOptions options)
     {
+        var matcher = options.ToMatcher();
+
+        var result = matcher.Execute(directoryInfo: options.ToDirectoryInfo());
+
+        return GlobEvaluationResult.FromPatternMatchingResult(result);
+    }
+
+    /// <summary>
+    /// Converts the specified <see cref="GlobOptions"/> instance to a <see cref="Matcher"/> instance.
+    /// </summary>
+    /// <param name="options">The <see cref="GlobOptions"/> instance to convert.</param>
+    /// <returns>A new <see cref="Matcher"/> instance.</returns>
+    internal static Matcher ToMatcher(this GlobOptions options)
+    {
         var matcher = new Matcher(
             comparisonType: options.IsCaseInsensitive
                 ? StringComparison.OrdinalIgnoreCase
@@ -23,8 +37,6 @@ public static class GlobOptionsExtensions
         matcher.AddIncludePatterns(options.Inclusions ?? []);
         matcher.AddExcludePatterns(options.Exclusions ?? []);
 
-        var result = matcher.Execute(directoryInfo: options.ToDirectoryInfo());
-
-        return GlobEvaluationResult.FromPatternMatchingResult(result);
+        return matcher;
     }
 }
