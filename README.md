@@ -31,7 +31,7 @@ foreach (var file in files)
 ```csharp
 using Pathological.Globbing;
 
-var glob = new Glob();
+var glob = new Glob(BasePath: "../");
 
 // All js files, but don't look in node_modules
 var files = glob.GetMatchesAsync("**/*.js", "node_modules/**");
@@ -45,16 +45,20 @@ await foreach (var file in files)
 ### ☑️ Builder-pattern fluent API
 
 ```csharp
+using Pathological.Globbing;
+using Pathological.Globbing.Options;
+
 var builder = new GlobOptionsBuilder()
     .WithBasePath("../../")
     .WithCaseInsensitive(isCaseInsensitive: true)
     .WithPattern("**/*.cs")
-    .WithIgnorePatterns(["**/bin/**", "**/obj/**"])
+    .WithIgnorePatterns(["**/bin/**", "**/obj/**"]);
 
-var options = builder.Build(); // Validate and build options
+// Execute the globbing operation, evaluating results.
+var result = builder.ExecuteEvaluation();
 
-var evaluator = IGlobEvaluator.Default;
-var result = evaluator.Evaluate();
+_ = result.HasMatches;  // true
+_ = result.Matches;     // IEnumerable<GlobMatch>
 ```
 
 ## 🔥 File-system globbing

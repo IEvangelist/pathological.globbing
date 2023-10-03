@@ -9,12 +9,11 @@ public class GlobEvaluatorTests
     public void EvaluateReturnsExpectedResult()
     {
         // Arrange
-        var globEvaluator = DefaultGlobEvaluator.Default;
         var builder = new GlobOptionsBuilder()
             .WithPattern("../../../**/*.cs");
 
         // Act
-        var result = globEvaluator.Evaluate(builder);
+        var result = builder.ExecuteEvaluation();
 
         // Assert
         Assert.NotEqual(default, result);

@@ -16,7 +16,7 @@ public class GlobOptionsBuilderExtensionsTests
             .WithIgnorePattern("**/obj/**");
 
         // Act
-        var result = builder.Evaluate();
+        var result = builder.ExecuteEvaluation();
 
         // Assert
         Assert.NotEqual(default, result);

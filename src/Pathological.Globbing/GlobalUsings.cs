@@ -6,7 +6,6 @@ global using System.Diagnostics;
 global using System.Runtime.CompilerServices;
 global using System.Threading.Channels;
 
-global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.FileSystemGlobbing;
 global using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 
