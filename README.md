@@ -54,8 +54,10 @@ var builder = new GlobOptionsBuilder()
     .WithPattern("**/*.cs")
     .WithIgnorePatterns(["**/bin/**", "**/obj/**"]);
 
+// Validate and build the globbing options.
 // Execute the globbing operation, evaluating results.
-var result = builder.ExecuteEvaluation();
+var result = builder.ValidateAndBuild()
+    .ExecuteEvaluation();
 
 _ = result.HasMatches;  // true
 _ = result.Matches;     // IEnumerable<GlobMatch>

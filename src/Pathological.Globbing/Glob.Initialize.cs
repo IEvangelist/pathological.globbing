@@ -26,7 +26,7 @@ public sealed partial class Glob
             .WithPatterns(patterns)
             .WithIgnorePatterns(ignorePatterns);
 
-        _ = builder.Build(); // Validate
+        _ = builder.ValidateAndBuild();
 
         var matcher = new Matcher(
             comparisonType: isCaseInsensitive

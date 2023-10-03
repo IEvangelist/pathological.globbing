@@ -11,7 +11,7 @@ public class GlobOptionsBuilderTests
         var builder = new GlobOptionsBuilder()
             .WithIgnorePattern("**/*.*");
 
-        var options = builder.Build();
+        var options = builder.ValidateAndBuild();
 
         Assert.Equal(GlobDefaults.BasePath, options.BasePath);
         Assert.Equal(GlobDefaults.IsCaseInsensitive, options.IsCaseInsensitive);
@@ -94,7 +94,7 @@ public class GlobOptionsBuilderTests
         var builder = new GlobOptionsBuilder();
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => builder.Build());
+        Assert.Throws<ArgumentException>(() => builder.ValidateAndBuild());
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class GlobOptionsBuilderTests
             .WithIgnorePatterns([]);
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => builder.Build());
+        Assert.Throws<ArgumentException>(() => builder.ValidateAndBuild());
     }
 
     [Fact]
@@ -120,7 +120,7 @@ public class GlobOptionsBuilderTests
             .WithIgnorePattern("bin");
 
         // Act
-        var result = builder.Build();
+        var result = builder.ValidateAndBuild();
 
         // Assert
         Assert.Equal("c:\\temp", result.BasePath);

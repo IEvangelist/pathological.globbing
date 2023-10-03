@@ -103,7 +103,7 @@ public record class GlobOptionsBuilder(
             : this with { IgnorePatterns = CoalesceConcat(IgnorePatterns, ignorePatterns) };
 
     /// <summary>
-    /// Builds a new <see cref="GlobOptions"/> instance using the current configuration.
+    /// Validates and builds a new <see cref="GlobOptions"/> instance using the current configuration.
     /// As part of the build, the options are validated and this method has the
     /// potential to <see langword="throw"/>.
     /// </summary>
@@ -112,7 +112,7 @@ public record class GlobOptionsBuilder(
     /// <exception cref="ArgumentException">Thrown when both <paramref name="Patterns"/> and <paramref name="IgnorePatterns"/> are empty.</exception>
     /// <exception cref="ArgumentException">Thrown when any of the patterns in <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> 
     /// containers an empty, null or whitespace pattern.</exception>
-    public GlobOptions Build()
+    public GlobOptions ValidateAndBuild()
     {
         ValidateArguments(Patterns, IgnorePatterns);
 

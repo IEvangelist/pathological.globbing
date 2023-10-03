@@ -5,7 +5,7 @@ namespace Pathological.Globbing.Options;
 
 /// <summary>
 /// Represents the options to use when performing a glob search. Options are assumed to be 
-/// valid, having been built with <see cref="GlobOptionsBuilder.Build"/>.
+/// valid, having been built with <see cref="GlobOptionsBuilder.ValidateAndBuild"/>.
 /// </summary>
 /// <param name="BasePath">The base path to use when evaluating the glob pattern.</param>
 /// <param name="IsCaseInsensitive">Whether or not to ignore case when evaluating the glob pattern.</param>
