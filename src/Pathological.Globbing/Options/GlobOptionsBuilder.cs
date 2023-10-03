@@ -13,7 +13,7 @@ namespace Pathological.Globbing.Options;
 [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 public readonly record struct GlobOptionsBuilder(
     in string BasePath = GlobDefaults.BasePath,
-    in bool IsCaseInsensitive = GlobDefaults.IsCaseInsensitive)
+    in bool IsCaseInsensitive = GlobDefaults.IsCaseInsensitive) : IBasePathOption
 {
     /// <summary>
     /// Gets or sets the enumerable of glob patterns to match against.

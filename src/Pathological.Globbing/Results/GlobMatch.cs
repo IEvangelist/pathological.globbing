@@ -22,14 +22,8 @@ public readonly record struct GlobMatch(
     string Path,
     string? Stem = default)
 {
-    /// <summary>
-    /// Implicitly converts a <see cref="GlobMatch"/> object to a <see cref="FileInfo"/> object.
-    /// </summary>
-    /// <param name="match">The <see cref="GlobMatch"/> object to convert.</param>
-    /// <returns>A new <see cref="FileInfo"/> object representing the path of the <see cref="GlobMatch"/> object.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator FileInfo(GlobMatch match) =>
-        new(Combine(match.Stem ?? "", match.Path));
+    public static FileInfo ToFileInfo(IBasePathOption option, GlobMatch match) =>
+        new(fileName: option.ResolvePath(match.Path));
 
     /// <summary>
     /// Defines an explicit conversion of a <see cref="FilePatternMatch"/> object to a <see cref="GlobMatch"/> object.

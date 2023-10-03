@@ -1,8 +1,6 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
-using Pathological.Globbing.Results;
-
 namespace Pathological.Globbing.Tests;
 
 public class GlobOptionsBuilderExtensionsTests
@@ -29,7 +27,8 @@ public class GlobOptionsBuilderExtensionsTests
         {
             Assert.NotEqual(default, match);
 
-            FileInfo file = match;
+            var file = GlobMatch.ToFileInfo(builder, match);
+
             Assert.IsType<FileInfo>(file);
             Assert.True(file.Exists);
             Assert.EndsWith(".cs", file.Extension);

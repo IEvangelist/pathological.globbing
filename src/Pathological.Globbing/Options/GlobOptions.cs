@@ -15,4 +15,4 @@ public readonly record struct GlobOptions(
     string BasePath,
     bool IsCaseInsensitive,
     IEnumerable<string> Inclusions,
-    IEnumerable<string> Exclusions);
+    IEnumerable<string> Exclusions) : IBasePathOption;

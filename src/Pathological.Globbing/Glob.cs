@@ -19,7 +19,7 @@ namespace Pathological.Globbing;
 /// </param>
 public sealed partial class Glob(
     string basePath = GlobDefaults.BasePath,
-    bool isCaseInsensitive = GlobDefaults.IsCaseInsensitive)
+    bool isCaseInsensitive = GlobDefaults.IsCaseInsensitive) : IBasePathOption
 {
     internal FrozenSet<string>? Inclusions { get; private set; }
 
