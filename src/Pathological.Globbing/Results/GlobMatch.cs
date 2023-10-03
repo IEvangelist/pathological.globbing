@@ -20,8 +20,14 @@ public readonly record struct GlobMatch(
     string Path,
     string? Stem = default)
 {
-    public static FileInfo ToFileInfo(IBasePathOption option, GlobMatch match) =>
-        new(fileName: option.ResolvePath(match.Path));
+    /// <summary>
+    /// Converts the current <see cref="GlobMatch"/> instance to a <see cref="FileInfo"/> instance using the specified <see cref="IBasePathOption"/>.
+    /// </summary>
+    /// <param name="option">The <see cref="IBasePathOption"/> used to resolve the path.</param>
+    /// <returns>A new <see cref="FileInfo"/> instance representing the current <see cref="GlobMatch"/> instance.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public FileInfo ToFileInfo(IBasePathOption option) =>
+        new(fileName: option.ResolvePath(Path));
 
     /// <summary>
     /// Defines an explicit conversion of a <see cref="FilePatternMatch"/> object to a <see cref="GlobMatch"/> object.

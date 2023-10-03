@@ -13,9 +13,10 @@ public readonly record struct GlobEvaluationResult(
     IEnumerable<GlobMatch> Matches)
 {
     /// <summary>
-    /// Explicitly converts a <see cref="PatternMatchingResult"/> object to a <see cref="GlobEvaluationResult"/> value.
+    /// Converts a <see cref="PatternMatchingResult"/> to a <see cref="GlobEvaluationResult"/>.
     /// </summary>
-    /// <param name="patternMatchingResult">The <see cref="PatternMatchingResult"/> object to convert.</param>
+    /// <param name="patternMatchingResult">The <see cref="PatternMatchingResult"/> to convert.</param>
+    /// <returns>A new instance of <see cref="GlobEvaluationResult"/> with the converted data.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static GlobEvaluationResult FromPatternMatchingResult(
         PatternMatchingResult patternMatchingResult) =>

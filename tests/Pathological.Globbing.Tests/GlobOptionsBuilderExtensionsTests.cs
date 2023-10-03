@@ -1,12 +1,14 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
+using System.IO;
+
 namespace Pathological.Globbing.Tests;
 
 public class GlobOptionsBuilderExtensionsTests
 {
     [Fact]
-    public void EvaluateReturnsExpectedResult()
+    public void ExecuteEvaluationReturnsExpectedResult()
     {
         // Arrange
         var builder = new GlobOptionsBuilder()
@@ -27,7 +29,7 @@ public class GlobOptionsBuilderExtensionsTests
         {
             Assert.NotEqual(default, match);
 
-            var file = GlobMatch.ToFileInfo(builder, match);
+            var file = match.ToFileInfo(builder);
 
             Assert.IsType<FileInfo>(file);
             Assert.True(file.Exists);
