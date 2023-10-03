@@ -42,6 +42,21 @@ await foreach (var file in files)
 }
 ```
 
+### ☑️ Builder-pattern fluent API
+
+```csharp
+var builder = new GlobOptionsBuilder()
+    .WithBasePath("../../")
+    .WithCaseInsensitive(isCaseInsensitive: true)
+    .WithPattern("**/*.cs")
+    .WithIgnorePatterns(["**/bin/**", "**/obj/**"])
+
+var options = builder.Build(); // Validate and build options
+
+var evaluator = IGlobEvaluator.Default;
+var result = evaluator.Evaluate();
+```
+
 ## 🔥 File-system globbing
 
 This library relies on the `Microsoft.Extensions.FileSystemGlobbing` NuGet package for file-system globbing.
