@@ -1,7 +1,7 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
-namespace Pathological.Globbing;
+namespace Pathological.Globbing.Options;
 
 /// <summary>
 /// Contains default values for globbing operations.

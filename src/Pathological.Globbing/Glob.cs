@@ -18,6 +18,8 @@ public sealed partial class Glob(
     string basePath = GlobDefaults.BasePath,
     bool isCaseInsensitive = GlobDefaults.IsCaseInsensitive)
 {
+    internal Matcher? _matcher;
+
     /// <summary>
     /// Gets the base path used for globbing, as assigned from <paramref name="basePath"/>.
     /// Defaults to <c>"."</c> which is the current directory.
@@ -79,8 +81,8 @@ public sealed partial class Glob(
     /// <returns>An enumerable collection of file paths that match the specified patterns and do not match the specified ignore patterns.</returns>
     public IEnumerable<string> GetMatches(string[] patterns, string[] ignorePatterns)
     {
-        var matcher = GetInitializedMatcher(patterns, ignorePatterns, isCaseInsensitive);
+        _ = InitializeMatcher(patterns, ignorePatterns);
 
-        return matcher.GetResultsInFullPath(BasePath);
+        return _matcher!.GetResultsInFullPath(BasePath);
     }
 }
