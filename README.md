@@ -48,6 +48,7 @@ await foreach (var file in files)
 using Pathological.Globbing;
 using Pathological.Globbing.Options;
 
+// Build glob options.
 var builder = new GlobOptionsBuilder()
     .WithBasePath("../../")
     .WithCaseInsensitive(isCaseInsensitive: true)

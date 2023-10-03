@@ -26,7 +26,8 @@ public record class GlobOptionsBuilder(
     internal IEnumerable<string> IgnorePatterns { get; init; } = [];
 
     /// <summary>
-    /// Concatenates two sequences and returns the concatenated sequence. If either of the input sequences is null, an empty sequence is used instead.
+    /// Concatenates two sequences and returns the concatenated sequence.
+    /// If either of the input sequences is <see langword="null"/>, an empty sequence is used instead.
     /// </summary>
     /// <typeparam name="T">The type of the elements of the input sequences.</typeparam>
     /// <param name="source">The first sequence to concatenate.</param>
@@ -103,24 +104,18 @@ public record class GlobOptionsBuilder(
             : this with { IgnorePatterns = CoalesceConcat(IgnorePatterns, ignorePatterns) };
 
     /// <summary>
-    /// Validates and builds a new <see cref="GlobOptions"/> instance using the current configuration.
-    /// As part of the build, the options are validated and this method has the
-    /// potential to <see langword="throw"/>.
+    /// Validates the patterns and ignore patterns in the <see cref="GlobOptionsBuilder"/> instance.
     /// </summary>
-    /// <returns>A new <see cref="GlobOptions"/> instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when either <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">Thrown when both <paramref name="Patterns"/> and <paramref name="IgnorePatterns"/> are empty.</exception>
     /// <exception cref="ArgumentException">Thrown when any of the patterns in <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> 
-    /// containers an empty, null or whitespace pattern.</exception>
-    public GlobOptions ValidateAndBuild()
+    /// contains an empty, null or whitespace pattern.</exception>
+    /// <returns>The current <see cref="GlobOptionsBuilder"/> instance.</returns>
+    public GlobOptionsBuilder Validate()
     {
         ValidateArguments(Patterns, IgnorePatterns);
 
-        return new GlobOptions(
-            BasePath,
-            IsCaseInsensitive,
-            Inclusions: Patterns ?? [],
-            Exclusions: IgnorePatterns ?? []);
+        return this;
 
         static void ValidateArguments(
             IEnumerable<string> patterns,
@@ -158,6 +153,29 @@ public record class GlobOptionsBuilder(
                 };
             }
         }
+    }
+
+    /// <summary>
+    /// Calls <see cref="Validate"/> and then builds a new <see cref="GlobOptions"/> instance using the current configuration.
+    /// As part of the build, the options are validated and this method has the
+    /// potential to <see langword="throw"/>.
+    /// </summary>
+    /// <returns>A new <see cref="GlobOptions"/> instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when either <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">Thrown when both <paramref name="Patterns"/> and <paramref name="IgnorePatterns"/> are empty.</exception>
+    /// <exception cref="ArgumentException">Thrown when any of the patterns in <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> 
+    /// contains an empty, null or whitespace pattern.</exception>
+    public GlobOptions ValidateAndBuild()
+    {
+        _ = Validate();
+
+        return new GlobOptions(
+            BasePath,
+            IsCaseInsensitive,
+            Inclusions: Patterns ?? [],
+            Exclusions: IgnorePatterns ?? []);
+
+        
     }
 
     private string GetDebuggerDisplay() => ToString();

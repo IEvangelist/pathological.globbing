@@ -16,14 +16,14 @@ public static class GlobOptionsExtensions
     public static GlobEvaluationResult ExecuteEvaluation(this GlobOptions options)
     {
         var matcher = new Matcher(
-            options.IsCaseInsensitive
+            comparisonType: options.IsCaseInsensitive
                 ? StringComparison.OrdinalIgnoreCase
                 : StringComparison.Ordinal);
 
         matcher.AddIncludePatterns(options.Inclusions ?? []);
         matcher.AddExcludePatterns(options.Exclusions ?? []);
 
-        var result = matcher.Execute(options.ToDirectoryInfo());
+        var result = matcher.Execute(directoryInfo: options.ToDirectoryInfo());
 
         return GlobEvaluationResult.FromPatternMatchingResult(result);
     }
