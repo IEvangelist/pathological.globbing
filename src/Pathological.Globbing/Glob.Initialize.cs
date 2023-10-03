@@ -1,24 +1,12 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Frozen;
+
 namespace Pathological.Globbing;
 
 public sealed partial class Glob
 {
-    internal static Glob InitializeFromBuilder(GlobOptionsBuilder builder)
-    {
-        var options = builder.Build();
-
-        var glob = new Glob(
-            basePath: options.BasePath,
-            isCaseInsensitive: options.IsCaseInsensitive)
-            .InitializeMatcher(
-                patterns: options.Patterns.ToArray(),
-                ignorePatterns: options.IgnorePatterns.ToArray());
-
-        return glob;
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Matcher"/> class with the specified include and exclude patterns.
     /// </summary>
@@ -29,8 +17,11 @@ public sealed partial class Glob
     /// <exception cref="ArgumentException">Thrown when both <paramref name="patterns"/> and <paramref name="ignorePatterns"/> are empty.</exception>
     /// <exception cref="ArgumentException">Thrown when any of the patterns in <paramref name="patterns"/> or <paramref name="ignorePatterns"/> 
     /// containers an empty, null or whitespace pattern.</exception>
-    internal Glob InitializeMatcher(string[] patterns, string[] ignorePatterns)
+    internal Matcher InitializeMatcher(string[] patterns, string[] ignorePatterns)
     {
+        (Inclusions, Exclusions) =
+            (patterns.ToFrozenSet(), ignorePatterns.ToFrozenSet());
+
         var builder = new GlobOptionsBuilder(
             BasePath,
             isCaseInsensitive)
@@ -39,21 +30,21 @@ public sealed partial class Glob
 
         _ = builder.Build(); // Validate
 
-        _matcher = new Matcher(
+        var matcher = new Matcher(
             comparisonType: isCaseInsensitive
                 ? StringComparison.OrdinalIgnoreCase
                 : StringComparison.Ordinal);
 
         if (patterns is { Length: > 0 })
         {
-            _matcher.AddIncludePatterns(patterns);
+            matcher.AddIncludePatterns(patterns);
         }
 
         if (ignorePatterns is { Length: > 0 })
         {
-            _matcher.AddExcludePatterns(ignorePatterns);
+            matcher.AddExcludePatterns(ignorePatterns);
         }
 
-        return this;
+        return matcher;
     }
 }

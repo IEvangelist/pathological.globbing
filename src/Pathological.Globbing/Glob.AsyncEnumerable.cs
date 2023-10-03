@@ -156,10 +156,10 @@ public sealed partial class Glob
         string[] ignorePatterns,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        _ = InitializeMatcher(patterns, ignorePatterns);
+        var matcher = InitializeMatcher(patterns, ignorePatterns);
 
         await foreach (var filePath in EnumerateFilesAsync(
-            filePath => Matches(_matcher!, BasePath, filePath), cancellationToken))
+            filePath => Matches(matcher, BasePath, filePath), cancellationToken))
         {
             yield return filePath;
         }

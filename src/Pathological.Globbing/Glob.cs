@@ -1,6 +1,9 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Frozen;
+using System.Collections.Immutable;
+
 namespace Pathological.Globbing;
 
 /// <summary>
@@ -18,7 +21,9 @@ public sealed partial class Glob(
     string basePath = GlobDefaults.BasePath,
     bool isCaseInsensitive = GlobDefaults.IsCaseInsensitive)
 {
-    internal Matcher? _matcher;
+    internal FrozenSet<string>? Inclusions { get; private set; }
+
+    internal FrozenSet<string>? Exclusions { get; private set; }
 
     /// <summary>
     /// Gets the base path used for globbing, as assigned from <paramref name="basePath"/>.
@@ -81,8 +86,8 @@ public sealed partial class Glob(
     /// <returns>An enumerable collection of file paths that match the specified patterns and do not match the specified ignore patterns.</returns>
     public IEnumerable<string> GetMatches(string[] patterns, string[] ignorePatterns)
     {
-        _ = InitializeMatcher(patterns, ignorePatterns);
+        var matcher = InitializeMatcher(patterns, ignorePatterns);
 
-        return _matcher!.GetResultsInFullPath(BasePath);
+        return matcher.GetResultsInFullPath(BasePath);
     }
 }

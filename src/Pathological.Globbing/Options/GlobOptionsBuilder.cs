@@ -12,8 +12,8 @@ namespace Pathological.Globbing.Options;
 /// </remarks>
 [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 public readonly record struct GlobOptionsBuilder(
-    string BasePath = GlobDefaults.BasePath,
-    bool IsCaseInsensitive = GlobDefaults.IsCaseInsensitive)
+    in string BasePath = GlobDefaults.BasePath,
+    in bool IsCaseInsensitive = GlobDefaults.IsCaseInsensitive)
 {
     /// <summary>
     /// Gets or sets the enumerable of glob patterns to match against.
@@ -24,6 +24,21 @@ public readonly record struct GlobOptionsBuilder(
     /// Gets or sets the list of patterns to ignore when matching against file paths.
     /// </summary>
     public IEnumerable<string> IgnorePatterns { get; init; } = [];
+
+    /// <summary>
+    /// Concatenates two sequences and returns the concatenated sequence. If either of the input sequences is null, an empty sequence is used instead.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements of the input sequences.</typeparam>
+    /// <param name="source">The first sequence to concatenate.</param>
+    /// <param name="other">The second sequence to concatenate.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> that contains the concatenated elements of the two input sequences.</returns>
+    private static IEnumerable<T> CoalesceConcat<T>(
+        IEnumerable<T>? source = null,
+        IEnumerable<T>? other = null) =>
+        [
+            ..(source ?? Enumerable.Empty<T>()),
+            ..(other ?? Enumerable.Empty<T>())
+        ];
 
     /// <summary>
     /// Sets the base path for the glob matching builder.
@@ -53,7 +68,7 @@ public readonly record struct GlobOptionsBuilder(
     public GlobOptionsBuilder WithPattern(string pattern) =>
         pattern is null
             ? throw new ArgumentNullException(nameof(pattern))
-            : this with { Patterns = Patterns.Concat([pattern]) };
+            : this with { Patterns = CoalesceConcat(Patterns, [pattern]) };
 
     /// <summary>
     /// Adds the specified patterns to the list of patterns to match against.
@@ -64,7 +79,7 @@ public readonly record struct GlobOptionsBuilder(
     public GlobOptionsBuilder WithPatterns(string[] patterns) =>
         patterns is null
             ? throw new ArgumentNullException(nameof(patterns))
-            : this with { Patterns = Patterns.Concat(patterns) };
+            : this with { Patterns = CoalesceConcat(Patterns, patterns) };
 
     /// <summary>
     /// Adds an ignore pattern to the current <see cref="GlobOptionsBuilder"/> instance.
@@ -75,7 +90,7 @@ public readonly record struct GlobOptionsBuilder(
     public GlobOptionsBuilder WithIgnorePattern(string ignorePattern) =>
         ignorePattern is null
             ? throw new ArgumentNullException(nameof(ignorePattern))
-            : this with { IgnorePatterns = IgnorePatterns.Concat([ignorePattern]) };
+            : this with { IgnorePatterns = CoalesceConcat(IgnorePatterns, [ignorePattern]) };
 
     /// <summary>
     /// Adds the specified ignore patterns to the current <see cref="GlobOptionsBuilder"/> instance.
@@ -86,7 +101,7 @@ public readonly record struct GlobOptionsBuilder(
     public GlobOptionsBuilder WithIgnorePatterns(string[] ignorePatterns) =>
         ignorePatterns is null
             ? throw new ArgumentNullException(nameof(ignorePatterns))
-            : this with { IgnorePatterns = IgnorePatterns.Concat(ignorePatterns) };
+            : this with { IgnorePatterns = CoalesceConcat(IgnorePatterns, ignorePatterns) };
 
     /// <summary>
     /// Builds a new <see cref="GlobOptions"/> instance using the current configuration.
@@ -102,9 +117,15 @@ public readonly record struct GlobOptionsBuilder(
     {
         ValidateArguments(Patterns, IgnorePatterns);
 
-        return new(BasePath, IsCaseInsensitive, Patterns, IgnorePatterns);
+        return new GlobOptions(
+            BasePath,
+            IsCaseInsensitive,
+            Inclusions: Patterns,
+            Exclusions: IgnorePatterns);
 
-        static void ValidateArguments(IEnumerable<string> patterns, IEnumerable<string> ignorePatterns)
+        static void ValidateArguments(
+            in IEnumerable<string> patterns,
+            in IEnumerable<string> ignorePatterns)
         {
             ArgumentNullException.ThrowIfNull(patterns);
 
@@ -126,14 +147,17 @@ public readonly record struct GlobOptionsBuilder(
                     "At least one pattern or ignore pattern must be specified.");
             }
 
-            static bool IsEmpty(IEnumerable<string> enumerable) => enumerable switch
+            static bool IsEmpty(IEnumerable<string> enumerable)
             {
-                IList<string> list => list.Count is 0,
-                ICollection<string> c => c.Count is 0,
-                Array array => array.Length is 0,
+                return enumerable switch
+                {
+                    IList<string> list => list.Count is 0,
+                    ICollection<string> c => c.Count is 0,
+                    Array array => array.Length is 0,
 
-                _ => enumerable.Any() is false
-            };
+                    _ => enumerable.Any() is false
+                };
+            }
         }
     }
 

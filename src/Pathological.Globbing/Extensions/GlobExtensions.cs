@@ -44,15 +44,4 @@ public static class GlobExtensions
             yield return new GlobMatch(match);
         }
     }
-
-    internal static GlobMatchingResult ExecuteMatcher(this Glob glob)
-    {
-        var wrapper = new DirectoryInfoWrapper(
-            directoryInfo: new DirectoryInfo(
-                path: glob.BasePath));
-
-        var result = glob._matcher!.Execute(wrapper);
-
-        return (GlobMatchingResult)result;
-    }
 }
