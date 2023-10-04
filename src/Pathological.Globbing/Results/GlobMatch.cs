@@ -8,12 +8,12 @@ namespace Pathological.Globbing.Results;
 /// </summary>
 /// <param name="Path">
 /// The path that matched the glob pattern.
-/// If the <see cref="IGlobEvaluator"/> searched for <c>"src/Project/**/*.cs"</c> and the pattern matcher found <c>"src/Project/Interfaces/IFile.cs"</c>,
+/// If the <see cref="Glob"/> searched for <c>"src/Project/**/*.cs"</c> and the pattern matcher found <c>"src/Project/Interfaces/IFile.cs"</c>,
 /// then <see cref="Stem" /> = <c>"Interfaces/IFile.cs"</c> and <see cref="Path" /> = <c>"src/Project/Interfaces/IFile.cs"</c>.
 /// </param>
 /// <param name="Stem">
 /// The stem of the path that matched the glob pattern.
-/// If the <see cref="IGlobEvaluator"/> searched for <c>"src/Project/**/*.cs"</c> and the pattern matcher found <c>"src/Project/Interfaces/IFile.cs"</c>,
+/// If the <see cref="Glob"/> searched for <c>"src/Project/**/*.cs"</c> and the pattern matcher found <c>"src/Project/Interfaces/IFile.cs"</c>,
 /// then <see cref="Stem" /> = <c>"Interfaces/IFile.cs"</c> and <see cref="Path" /> = <c>"src/Project/Interfaces/IFile.cs"</c>.
 /// </param>
 public readonly record struct GlobMatch(

@@ -8,7 +8,7 @@ namespace Pathological.Globbing.Options;
 /// </summary>
 /// <remarks>
 /// This builder allows you to configure the base path, case sensitivity, patterns to match, and patterns to ignore
-/// when creating a new instance of <see cref="GlobMatching"/>.
+/// when creating a new instance of <see cref="GlobOptions"/> instance.
 /// </remarks>
 [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 public record class GlobOptionsBuilder(
@@ -106,9 +106,9 @@ public record class GlobOptionsBuilder(
     /// <summary>
     /// Validates the patterns and ignore patterns in the <see cref="GlobOptionsBuilder"/> instance.
     /// </summary>
-    /// <exception cref="ArgumentNullException">Thrown when either <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">Thrown when both <paramref name="Patterns"/> and <paramref name="IgnorePatterns"/> are empty.</exception>
-    /// <exception cref="ArgumentException">Thrown when any of the patterns in <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> 
+    /// <exception cref="ArgumentNullException">Thrown when either <see cref="GlobOptions.Inclusions"/> or <see cref="GlobOptions.Exclusions"/> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">Thrown when both <see cref="GlobOptions.Inclusions"/> and <see cref="GlobOptions.Exclusions"/> are empty.</exception>
+    /// <exception cref="ArgumentException">Thrown when any of the patterns in <see cref="GlobOptions.Inclusions"/> or <see cref="GlobOptions.Exclusions"/> 
     /// contains an empty, null or whitespace pattern.</exception>
     /// <returns>The current <see cref="GlobOptionsBuilder"/> instance.</returns>
     public GlobOptionsBuilder Validate()
@@ -161,9 +161,9 @@ public record class GlobOptionsBuilder(
     /// potential to <see langword="throw"/>.
     /// </summary>
     /// <returns>A new <see cref="GlobOptions"/> instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when either <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">Thrown when both <paramref name="Patterns"/> and <paramref name="IgnorePatterns"/> are empty.</exception>
-    /// <exception cref="ArgumentException">Thrown when any of the patterns in <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> 
+    /// <exception cref="ArgumentNullException">Thrown when either <see cref="GlobOptions.Inclusions"/> or <see cref="GlobOptions.Exclusions"/> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">Thrown when both <see cref="GlobOptions.Inclusions"/> and <see cref="GlobOptions.Exclusions"/> are empty.</exception>
+    /// <exception cref="ArgumentException">Thrown when any of the patterns in <see cref="GlobOptions.Inclusions"/> or <see cref="GlobOptions.Exclusions"/> 
     /// contains an empty, null or whitespace pattern.</exception>
     public GlobOptions Build()
     {

@@ -19,10 +19,10 @@ public sealed partial class Glob(
     bool isCaseInsensitive = GlobDefaults.IgnoreCase) : IBasePathOption
 {
     /// <summary>
-    /// Gets the base path used for globbing, as assigned from <paramref name="basePath"/>.
+    /// Gets the base path used for globbing, as assigned from <c>Glob(basePath)</c>.
     /// Defaults to <c>"."</c> which is the current directory.
     /// </summary>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="basePath"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <c>Glob(basePath)</c> is <see langword="null" />.</exception>
     public string BasePath { get; } = basePath
         ?? throw new ArgumentNullException(nameof(basePath));
 

@@ -1,0 +1,71 @@
+name: publish nuget
+on:
+  push:
+    tags:
+      - '**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+    - name: Setup .NET
+      uses: actions/setup-dotnet@main
+      with:
+        dotnet-version: 8.0.x
+        dotnet-quality: 'preview'
+    - name: Test
+      run: dotnet test --filter "Category!=EndToEnd" --configuration Release
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project:
+        - Pathological.Globbing
+    steps:
+    
+    - name: Print tag ref
+      run: echo $GITHUB_REF
+      
+    - name: Extract version number
+      uses: actions-ecosystem/action-regex-match@main
+      id: regex-match
+      with:
+        text: ${{ github.ref }}
+        regex: '[0-9.]+'
+       
+    - name: Print version number
+      run: echo '${{ steps.regex-match.outputs.match }}'
+      
+    - uses: actions/checkout@main
+      with:
+        fetch-depth: 0
+    - name: Setup .NET
+      uses: actions/setup-dotnet@main
+      with:
+        dotnet-version: 8.0.x
+        dotnet-quality: 'preview'
+        
+    - name: Restore dependencies for ${{ matrix.project }}
+      run: |
+        dotnet restore ./src/${{ matrix.project }}/${{ matrix.project }}.csproj --configuration Release
+      
+    - name: Build ${{ matrix.project }}
+      run: |
+        dotnet build ./src/${{ matrix.project }}/${{ matrix.project }}.csproj --configuration Release --no-restore
+    
+    - name: Pack ${{ matrix.project }}
+      run: |
+        dotnet pack ./src/${{ matrix.project }}/${{ matrix.project }}.csproj --output packages
+
+    - name: Upload ${{ matrix.project }}
+      uses: actions/upload-artifact@main
+      with:
+        name: ${{ matrix.project }}.${{ steps.regex-match.outputs.match }}.nupkg
+        path: packages/*.nupkg
+      
+    - name: Publish ${{ matrix.project }} package
+      run: |
+        nuget push **\${{ matrix.project }}.*.nupkg -Source 'https://api.nuget.org/v3/index.json' -NoSymbols -NonInteractive -ApiKey ${{secrets.NUGET_API_KEY}}

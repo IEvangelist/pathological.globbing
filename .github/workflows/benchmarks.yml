@@ -1,4 +1,4 @@
-name: Benchmark.Net Example
+name: benchmarks
 on:
   release:
     types: [published]
