@@ -1,6 +1,11 @@
 ﻿# Pathological: Globbing
 
-[![.NET](https://github.com/IEvangelist/pathological.globbing/actions/workflows/dotnet.yml/badge.svg)](https://github.com/IEvangelist/pathological.globbing/actions/workflows/dotnet.yml)
+![.NET: Build & Test](https://img.shields.io/github/actions/workflow/status/IEvangelist/pathological.globbing/dotnet.yml?logo=github&label=build%20%26%20test&link=https%3A%2F%2Fgithub.com%2FIEvangelist%2Fpathological.globbing%2Factions%2Fworkflows%2Fdotnet.yml)
+![Nuget: Pathological.Globbing](https://img.shields.io/nuget/vpre/Pathological.Globbing?logo=nuget&label=nuget%20package&link=https%3A%2F%2Fwww.nuget.org%2Fpackages%2FPathological.Globbing)
+![License](https://img.shields.io/github/license/IEvangelist/pathological.globbing?logo=license&link=https%3A%2F%2Fgithub.com%2FIEvangelist%2Fblazorators%2Fblob%2Fmain%2FLICENSE)
+![C#](https://img.shields.io/github/languages/top/IEvangelist/pathological.globbing?label=C%23&labelColor=fff&color=%23512BD4)
+![IEvangelist followers](https://img.shields.io/github/followers/IEvangelist?label=IEvangelist&style=social&logo=github&labelColor=000&color=fff&link=https%3A%2F%2Fgithub.com%2FIEvangelist%3Ftab%3Dfollowers)
+![GitHub Sponsors](https://img.shields.io/github/sponsors/IEvangelist?style=social&logo=githubsponsors&labelColor=eee&color=%23EA4AAA&link=https%3A%2F%2Fgithub.com%2Fsponsors%2FIEvangelist)
 
 Welcome to the Pathological Globbing library. This library is a wrapper around the `Microsoft.Extensions.FileSystemGlobbing` NuGet package, which provides a fast, efficient, and cross-platform globbing functionality for .NET.
 
