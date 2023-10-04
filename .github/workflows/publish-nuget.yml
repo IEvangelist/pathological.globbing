@@ -15,7 +15,7 @@ jobs:
         dotnet-version: 8.0.x
         dotnet-quality: 'preview'
     - name: Test
-      run: dotnet test --filter "Category!=EndToEnd" --configuration Release
+      run: dotnet test --filter "Category!=EndToEnd" -c Release
 
   publish:
     needs: test
@@ -50,15 +50,15 @@ jobs:
         
     - name: Restore dependencies for ${{ matrix.project }}
       run: |
-        dotnet restore ./src/${{ matrix.project }}/${{ matrix.project }}.csproj --configuration Release
+        dotnet restore ./src/${{ matrix.project }}.csproj  -c Release
       
     - name: Build ${{ matrix.project }}
       run: |
-        dotnet build ./src/${{ matrix.project }}/${{ matrix.project }}.csproj --configuration Release --no-restore
+        dotnet build ./src/${{ matrix.project }}.csproj -c Release --no-restore
     
     - name: Pack ${{ matrix.project }}
       run: |
-        dotnet pack ./src/${{ matrix.project }}/${{ matrix.project }}.csproj --output packages
+        dotnet pack ./src/${{ matrix.project }}.csproj --output packages
 
     - name: Upload ${{ matrix.project }}
       uses: actions/upload-artifact@main
