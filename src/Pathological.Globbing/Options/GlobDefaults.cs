@@ -11,10 +11,10 @@ internal static class GlobDefaults
     /// <summary>
     /// The base path used for globbing. Defaults to the current directory.
     /// </summary>
-    public const string BasePath = ".";
+    internal const string BasePath = ".";
 
     /// <summary>
     /// Determines whether globbing operations should be case-insensitive by default.
     /// </summary>
-    public const bool IsCaseInsensitive = true;
+    internal const bool IsCaseInsensitive = true;
 }

@@ -14,7 +14,8 @@ internal static class BasePathOptionExtensions
     /// <param name="basePathOption">The <see cref="IBasePathOption"/> instance.</param>
     /// <param name="path">The path to resolve.</param>
     /// <returns>The full path.</returns>
-    internal static string ResolvePath(this IBasePathOption basePathOption, string path)
+    internal static string ResolvePath(
+        this IBasePathOption basePathOption, string path)
     {
         var fullPath = Path.Combine(basePathOption.BasePath, path);
 
@@ -26,7 +27,8 @@ internal static class BasePathOptionExtensions
     /// </summary>
     /// <param name="basePathOption">The <see cref="IBasePathOption"/> instance.</param>
     /// <returns>The <see cref="DirectoryInfoBase"/> instance.</returns>
-    internal static DirectoryInfoBase ToDirectoryInfo(this IBasePathOption basePathOption)
+    internal static DirectoryInfoBase ToDirectoryInfo(
+        this IBasePathOption basePathOption)
     {
         var wrapper = new DirectoryInfoWrapper(
             directoryInfo: new DirectoryInfo(

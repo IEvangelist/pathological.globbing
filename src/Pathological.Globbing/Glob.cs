@@ -19,16 +19,6 @@ public sealed partial class Glob(
     bool isCaseInsensitive = GlobDefaults.IsCaseInsensitive) : IBasePathOption
 {
     /// <summary>
-    /// Gets a set of patterns to include from the globbing search.
-    /// </summary>
-    internal FrozenSet<string>? Inclusions { get; private set; }
-
-    /// <summary>
-    /// Gets a set of patterns to exclude from the globbing search.
-    /// </summary>
-    internal FrozenSet<string>? Exclusions { get; private set; }
-
-    /// <summary>
     /// Gets the base path used for globbing, as assigned from <paramref name="basePath"/>.
     /// Defaults to <c>"."</c> which is the current directory.
     /// </summary>

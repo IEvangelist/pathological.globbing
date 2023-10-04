@@ -17,32 +17,14 @@ public sealed partial class Glob
     /// containers an empty, null or whitespace pattern.</exception>
     internal Matcher InitializeMatcher(string[] patterns, string[] ignorePatterns)
     {
-        (Inclusions, Exclusions) =
-            (patterns.ToFrozenSet(), ignorePatterns.ToFrozenSet());
-
         var builder = new GlobOptionsBuilder(
-            BasePath,
-            isCaseInsensitive)
-            .WithPatterns(patterns)
-            .WithIgnorePatterns(ignorePatterns);
+            BasePath: BasePath,
+            IsCaseInsensitive: isCaseInsensitive);
 
-        _ = builder.ValidateAndBuild();
+        var options = builder.WithPatterns(patterns)
+            .WithIgnorePatterns(ignorePatterns)
+            .Build();
 
-        var matcher = new Matcher(
-            comparisonType: isCaseInsensitive
-                ? StringComparison.OrdinalIgnoreCase
-                : StringComparison.Ordinal);
-
-        if (patterns is { Length: > 0 })
-        {
-            matcher.AddIncludePatterns(patterns);
-        }
-
-        if (ignorePatterns is { Length: > 0 })
-        {
-            matcher.AddExcludePatterns(ignorePatterns);
-        }
-
-        return matcher;
+        return options.ToMatcher();
     }
 }

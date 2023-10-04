@@ -42,6 +42,9 @@ await foreach (var file in files)
 }
 ```
 
+> **Note**
+> All streaming APIs support `CancellationToken` for cancellation, or `TimeSpan` for signaling cancellation after a certain amount of time.
+
 ### ☑️ Builder-pattern fluent API
 
 ```csharp
@@ -55,9 +58,9 @@ var builder = new GlobOptionsBuilder()
     .WithPattern("**/*.cs")
     .WithIgnorePatterns(["**/bin/**", "**/obj/**"]);
 
-// Validate and build the globbing options.
+// Build the globbing options.
 // Execute the globbing operation, evaluating results.
-var result = builder.ValidateAndBuild()
+var result = builder.Build()
     .ExecuteEvaluation();
 
 _ = result.HasMatches;  // true

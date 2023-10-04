@@ -46,4 +46,13 @@ public sealed partial class GlobTests
         Assert.Throws<ArgumentException>(
             () => glob.GetMatches(pattern: string.Empty, ignorePattern: string.Empty));
     }
+
+    [Fact]
+    public void GlobThrowsOnEmptyPatternWithinPatterns()
+    {
+        var glob = new Glob();
+
+        Assert.Throws<ArgumentException>(
+            () => glob.GetMatches(patterns: ["**/*.cs", ""]));
+    }
 }

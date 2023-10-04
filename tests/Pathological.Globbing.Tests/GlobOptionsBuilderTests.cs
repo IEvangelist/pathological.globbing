@@ -6,12 +6,34 @@ namespace Pathological.Globbing.Tests;
 public class GlobOptionsBuilderTests
 {
     [Fact]
+    public void InvalidArgumentsThrowTest()
+    {
+        // Arrange
+        var builder = new GlobOptionsBuilder(null!);
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(
+            () => builder.Build());
+    }
+
+    [Fact]
+    public void ParameterlessCtorBuildThrowsTest()
+    {
+        // Arrange
+        var builder = new GlobOptionsBuilder();
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(
+            () => builder.Build());
+    }
+
+    [Fact]
     public void WithIgnorePatternBuildsValidDefaultsTest()
     {
         var builder = new GlobOptionsBuilder()
             .WithIgnorePattern("**/*.*");
 
-        var options = builder.ValidateAndBuild();
+        var options = builder.Build();
 
         Assert.Equal(GlobDefaults.BasePath, options.BasePath);
         Assert.Equal(GlobDefaults.IsCaseInsensitive, options.IsCaseInsensitive);
@@ -94,7 +116,7 @@ public class GlobOptionsBuilderTests
         var builder = new GlobOptionsBuilder();
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => builder.ValidateAndBuild());
+        Assert.Throws<ArgumentException>(() => builder.Build());
     }
 
     [Fact]
@@ -106,7 +128,7 @@ public class GlobOptionsBuilderTests
             .WithIgnorePatterns([]);
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => builder.ValidateAndBuild());
+        Assert.Throws<ArgumentException>(() => builder.Build());
     }
 
     [Fact]
@@ -120,7 +142,7 @@ public class GlobOptionsBuilderTests
             .WithIgnorePattern("bin");
 
         // Act
-        var result = builder.ValidateAndBuild();
+        var result = builder.Build();
 
         // Assert
         Assert.Equal("c:\\temp", result.BasePath);

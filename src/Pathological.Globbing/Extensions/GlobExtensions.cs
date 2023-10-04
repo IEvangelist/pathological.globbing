@@ -17,8 +17,8 @@ public static class GlobExtensions
     /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="GlobMatch"/> instances.</returns>
     public static IEnumerable<GlobMatch> GetGlobMatches(
         this Glob glob,
-        string[] patterns,
-        string[] ignorePatterns)
+        [DisallowNull] string[] patterns,
+        [DisallowNull] string[] ignorePatterns)
     {
         var matches = glob.GetMatches(patterns, ignorePatterns);
 
@@ -34,8 +34,8 @@ public static class GlobExtensions
     /// <returns>An enumerable collection of FileInfo objects that match the specified glob patterns.</returns>
     public static IEnumerable<FileInfo> GetMatchingFileInfos(
         this Glob glob,
-        string[] patterns,
-        string[] ignorePatterns)
+        [DisallowNull] string[] patterns,
+        [DisallowNull] string[] ignorePatterns)
     {
         foreach (var match in glob.GetGlobMatches(patterns, ignorePatterns))
         {
@@ -53,8 +53,8 @@ public static class GlobExtensions
     /// <returns>An <see cref="IAsyncEnumerable{T}"/> of <see cref="GlobMatch"/> instances.</returns>
     public static async IAsyncEnumerable<GlobMatch> GetGlobMatchesAsync(
         this Glob glob,
-        string[] patterns,
-        string[] ignorePatterns,
+        [DisallowNull] string[] patterns,
+        [DisallowNull] string[] ignorePatterns,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var matches = glob.GetMatchesAsync(patterns, ignorePatterns, cancellationToken);
@@ -75,9 +75,9 @@ public static class GlobExtensions
     /// <returns>An asynchronous enumerable of <see cref="GlobMatch"/> instances.</returns>
     public static async IAsyncEnumerable<GlobMatch> GetGlobMatchesAsync(
         this Glob glob,
-        string[] patterns,
-        string[] ignorePatterns,
-        TimeSpan signal)
+        [DisallowNull] string[] patterns,
+        [DisallowNull] string[] ignorePatterns,
+        [DisallowNull] TimeSpan signal)
     {
         var matches = glob.GetMatchesAsync(patterns, ignorePatterns, signal);
 
@@ -97,8 +97,8 @@ public static class GlobExtensions
     /// <returns>An asynchronous enumerable of <see cref="FileInfo"/> objects that match the specified glob patterns.</returns>
     public static async IAsyncEnumerable<FileInfo> GetMatchingFileInfosAsync(
         this Glob glob,
-        string[] patterns,
-        string[] ignorePatterns,
+        [DisallowNull] string[] patterns,
+        [DisallowNull] string[] ignorePatterns,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await foreach (var match in glob.GetGlobMatchesAsync(patterns, ignorePatterns, cancellationToken))
@@ -117,8 +117,8 @@ public static class GlobExtensions
     /// <returns>An asynchronous enumerable of file information.</returns>
     public static async IAsyncEnumerable<FileInfo> GetMatchingFileInfosAsync(
         this Glob glob,
-        string[] patterns,
-        string[] ignorePatterns,
+        [DisallowNull] string[] patterns,
+        [DisallowNull] string[] ignorePatterns,
         TimeSpan signal)
     {
         await foreach (var match in glob.GetGlobMatchesAsync(patterns, ignorePatterns, signal))

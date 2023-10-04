@@ -165,7 +165,7 @@ public record class GlobOptionsBuilder(
     /// <exception cref="ArgumentException">Thrown when both <paramref name="Patterns"/> and <paramref name="IgnorePatterns"/> are empty.</exception>
     /// <exception cref="ArgumentException">Thrown when any of the patterns in <paramref name="Patterns"/> or <paramref name="IgnorePatterns"/> 
     /// contains an empty, null or whitespace pattern.</exception>
-    public GlobOptions ValidateAndBuild()
+    public GlobOptions Build()
     {
         _ = Validate();
 

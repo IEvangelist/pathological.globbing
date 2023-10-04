@@ -16,7 +16,7 @@ public class GlobOptionsBuilderExtensionsTests
             .WithIgnorePattern("**/obj/**");
 
         // Act
-        var result = builder.ValidateAndBuild()
+        var result = builder.Build()
             .ExecuteEvaluation();
 
         // Assert
