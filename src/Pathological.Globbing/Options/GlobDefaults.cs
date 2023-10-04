@@ -16,5 +16,5 @@ internal static class GlobDefaults
     /// <summary>
     /// Determines whether globbing operations should be case-insensitive by default.
     /// </summary>
-    internal const bool IsCaseInsensitive = true;
+    internal const bool IgnoreCase = true;
 }

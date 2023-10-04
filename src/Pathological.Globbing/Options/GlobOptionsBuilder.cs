@@ -13,7 +13,7 @@ namespace Pathological.Globbing.Options;
 [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 public record class GlobOptionsBuilder(
     string BasePath = GlobDefaults.BasePath,
-    bool IsCaseInsensitive = GlobDefaults.IsCaseInsensitive) : IBasePathOption
+    bool IgnoreCase = GlobDefaults.IgnoreCase) : IBasePathOption
 {
     /// <summary>
     /// Gets or sets the enumerable of glob patterns to match against.
@@ -57,7 +57,7 @@ public record class GlobOptionsBuilder(
     /// <param name="isCaseInsensitive">A boolean value indicating whether the matching should be case-insensitive.</param>
     /// <returns>A new instance of <see cref="GlobOptionsBuilder"/> with the specified case-insensitivity setting.</returns>
     public GlobOptionsBuilder WithCaseInsensitive(bool isCaseInsensitive) =>
-        this with { IsCaseInsensitive = isCaseInsensitive };
+        this with { IgnoreCase = isCaseInsensitive };
 
     /// <summary>
     /// Adds a pattern to the list of patterns to match against.
@@ -171,7 +171,7 @@ public record class GlobOptionsBuilder(
 
         return new GlobOptions(
             BasePath,
-            IsCaseInsensitive,
+            IgnoreCase,
             Inclusions: Patterns ?? [],
             Exclusions: IgnorePatterns ?? []);
     }

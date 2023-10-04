@@ -36,7 +36,7 @@ public class GlobOptionsBuilderTests
         var options = builder.Build();
 
         Assert.Equal(GlobDefaults.BasePath, options.BasePath);
-        Assert.Equal(GlobDefaults.IsCaseInsensitive, options.IsCaseInsensitive);
+        Assert.Equal(GlobDefaults.IgnoreCase, options.IgnoreCase);
         Assert.Empty(options.Inclusions);
         Assert.Single(options.Exclusions);
     }
@@ -53,16 +53,17 @@ public class GlobOptionsBuilderTests
     }
 
     [Fact]
-    public void WithCaseInsensitiveTrueSetsIsCaseInsensitiveToTrue()
+    public void WithCaseInsensitiveCorrectlyFlowsValue()
     {
         // Arrange
         var builder = new GlobOptionsBuilder();
 
-        // Act
+        // Act & Assert
         var result = builder.WithCaseInsensitive(true);
+        Assert.True(result.IgnoreCase);
 
-        // Assert
-        Assert.True(result.IsCaseInsensitive);
+        result = builder.WithCaseInsensitive(false);
+        Assert.False(result.IgnoreCase);
     }
 
     [Fact]
@@ -146,7 +147,7 @@ public class GlobOptionsBuilderTests
 
         // Assert
         Assert.Equal("c:\\temp", result.BasePath);
-        Assert.True(result.IsCaseInsensitive);
+        Assert.True(result.IgnoreCase);
         Assert.Equal(["*.txt"], result.Inclusions);
         Assert.Equal(["bin"], result.Exclusions);
     }

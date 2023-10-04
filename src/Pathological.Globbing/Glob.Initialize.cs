@@ -19,7 +19,7 @@ public sealed partial class Glob
     {
         var builder = new GlobOptionsBuilder(
             BasePath: BasePath,
-            IsCaseInsensitive: isCaseInsensitive);
+            IgnoreCase: isCaseInsensitive);
 
         var options = builder.WithPatterns(patterns)
             .WithIgnorePatterns(ignorePatterns)

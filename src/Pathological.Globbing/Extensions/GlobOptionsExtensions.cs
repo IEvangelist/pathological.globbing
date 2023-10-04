@@ -30,7 +30,7 @@ public static class GlobOptionsExtensions
     internal static Matcher ToMatcher(this GlobOptions options)
     {
         var matcher = new Matcher(
-            comparisonType: options.IsCaseInsensitive
+            comparisonType: options.IgnoreCase
                 ? StringComparison.OrdinalIgnoreCase
                 : StringComparison.Ordinal);
 

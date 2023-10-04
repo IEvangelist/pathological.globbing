@@ -16,7 +16,7 @@ namespace Pathological.Globbing;
 /// </param>
 public sealed partial class Glob(
     string basePath = GlobDefaults.BasePath,
-    bool isCaseInsensitive = GlobDefaults.IsCaseInsensitive) : IBasePathOption
+    bool isCaseInsensitive = GlobDefaults.IgnoreCase) : IBasePathOption
 {
     /// <summary>
     /// Gets the base path used for globbing, as assigned from <paramref name="basePath"/>.
