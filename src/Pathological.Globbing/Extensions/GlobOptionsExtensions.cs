@@ -19,7 +19,7 @@ public static class GlobOptionsExtensions
 
         var result = matcher.Execute(directoryInfo: options.ToDirectoryInfo());
 
-        return GlobEvaluationResult.FromPatternMatchingResult(result);
+        return GlobEvaluationResult.FromPatternMatchingResult(result, options);
     }
 
     /// <summary>

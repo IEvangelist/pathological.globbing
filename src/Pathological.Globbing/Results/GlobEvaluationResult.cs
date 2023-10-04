@@ -10,8 +10,24 @@ namespace Pathological.Globbing.Results;
 /// <param name="Matches">The collection of matches.</param>
 public readonly record struct GlobEvaluationResult(
     bool HasMatches,
-    IEnumerable<GlobMatch> Matches)
+    IEnumerable<GlobMatch> Matches,
+    IBasePathOption BasePathOption)
 {
+    /// <summary>
+    /// Gets an enumerable collection of <see cref="FileInfo"/> objects that 
+    /// represent the files that matched the glob pattern.
+    /// </summary>
+    public IEnumerable<FileInfo> Files
+    {
+        get
+        {
+            foreach (var match in Matches ?? [])
+            {
+                yield return match.ToFileInfo(BasePathOption);
+            }
+        }
+    }
+
     /// <summary>
     /// Converts a <see cref="PatternMatchingResult"/> to a <see cref="GlobEvaluationResult"/>.
     /// </summary>
@@ -19,8 +35,13 @@ public readonly record struct GlobEvaluationResult(
     /// <returns>A new instance of <see cref="GlobEvaluationResult"/> with the converted data.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static GlobEvaluationResult FromPatternMatchingResult(
-        PatternMatchingResult patternMatchingResult) =>
-        new(HasMatches: patternMatchingResult.HasMatches,
+        PatternMatchingResult patternMatchingResult,
+        IBasePathOption basePathOption)
+    {
+        return new GlobEvaluationResult(
+            HasMatches: patternMatchingResult.HasMatches,
             Matches: patternMatchingResult.Files.Select(
-                selector: static filePatternMatch => (GlobMatch)filePatternMatch));
+                selector: static filePatternMatch => (GlobMatch)filePatternMatch),
+            BasePathOption: basePathOption);
+    }
 }

@@ -26,7 +26,7 @@ public readonly record struct GlobMatch(
     /// <param name="option">The <see cref="IBasePathOption"/> used to resolve the path.</param>
     /// <returns>A new <see cref="FileInfo"/> instance representing the current <see cref="GlobMatch"/> instance.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public FileInfo ToFileInfo(IBasePathOption option) =>
+    internal FileInfo ToFileInfo(IBasePathOption option) =>
         new(fileName: option.ResolvePath(Path));
 
     /// <summary>

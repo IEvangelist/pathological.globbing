@@ -37,7 +37,7 @@ public record class GlobOptionsBuilder(
         IEnumerable<T>? source = null,
         IEnumerable<T>? other = null) =>
         [
-            ..(source ?? []), ..(other ?? [])
+            .. (source ?? []), .. (other ?? [])
         ];
 
     /// <summary>
@@ -174,8 +174,6 @@ public record class GlobOptionsBuilder(
             IsCaseInsensitive,
             Inclusions: Patterns ?? [],
             Exclusions: IgnorePatterns ?? []);
-
-        
     }
 
     private string GetDebuggerDisplay() => ToString();
