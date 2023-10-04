@@ -50,7 +50,7 @@ jobs:
         
     - name: Restore dependencies for ${{ matrix.project }}
       run: |
-        dotnet restore ./src/${{ matrix.project }}.csproj  -c Release
+        dotnet restore ./src/${{ matrix.project }}.csproj
       
     - name: Build ${{ matrix.project }}
       run: |
