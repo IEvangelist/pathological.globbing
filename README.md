@@ -79,9 +79,18 @@ var builder = new GlobOptionsBuilder()
     .WithIgnorePatterns(["**/bin/**", "**/obj/**"]);
 
 // Build the globbing options.
-// Execute the globbing operation, evaluating results.
-var result = builder.Build()
-    .ExecuteEvaluation();
+var options = builder.Build();
+
+// Get matching file infos.
+var files = glob.GetMatchingFileInfos();
+
+await foreach (var fileInfo in files)
+{
+    // Use fileInfo...
+}
+
+// Alternatively, execute the globbing operation, evaluating results.
+var result = options.ExecuteEvaluation();
 
 _ = result.HasMatches;  // true
 _ = result.Matches;     // IEnumerable<GlobMatch>

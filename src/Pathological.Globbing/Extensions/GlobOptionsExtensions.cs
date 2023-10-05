@@ -9,7 +9,7 @@ namespace Pathological.Globbing.Extensions;
 public static class GlobOptionsExtensions
 {
     /// <summary>
-    /// Executes the evaluation of the glob options.
+    /// Executes the evaluation of the globOptions options.
     /// </summary>
     /// <param name="options">The <see cref="GlobOptions"/> instance.</param>
     /// <returns>The <see cref="GlobEvaluationResult"/> instance.</returns>
@@ -38,5 +38,122 @@ public static class GlobOptionsExtensions
         matcher.AddExcludePatterns(options.Exclusions ?? []);
 
         return matcher;
+    }
+
+    /// <summary>
+    /// Gets the globOptions matches for the specified patterns and ignore patterns.
+    /// </summary>
+    /// <param name="globOptions">The glob pattern to match against.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="GlobMatch"/> instances.</returns>
+    public static IEnumerable<GlobMatch> GetGlobMatches(this GlobOptions globOptions)
+    {
+        var matcher = globOptions.ToMatcher();
+
+        return matcher.GetResultsInFullPath(globOptions.BasePath)
+            .Select(match => new GlobMatch(match));
+    }
+
+    /// <summary>
+    /// Returns an enumerable collection of FileInfo objects that match the specified globOptions patterns.
+    /// </summary>
+    /// <param name="globOptions">The glob pattern to match against.</param>
+    /// <returns>An enumerable collection of FileInfo objects that match the specified globOptions patterns.</returns>
+    public static IEnumerable<FileInfo> GetMatchingFileInfos(this GlobOptions globOptions)
+    {
+        var matcher = globOptions.ToMatcher();
+
+        return matcher.GetResultsInFullPath(globOptions.BasePath)
+            .Select(match =>
+                new GlobMatch(match).ToFileInfo(globOptions));
+    }
+
+    /// <summary>
+    /// Asynchronously gets the globOptions matches for the specified patterns and ignore patterns.
+    /// </summary>
+    /// <param name="globOptions">The glob pattern to match against.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+    /// <returns>An <see cref="IAsyncEnumerable{T}"/> of <see cref="GlobMatch"/> instances.</returns>
+    public static async IAsyncEnumerable<GlobMatch> GetGlobMatchesAsync(
+        this GlobOptions globOptions,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var glob = new Glob(
+            globOptions.BasePath,
+            globOptions.IgnoreCase);
+
+        var matches = glob.GetMatchesAsync(
+            (globOptions.Inclusions ?? []).ToArray(),
+            (globOptions.Exclusions ?? []).ToArray(),
+            cancellationToken);
+
+        await foreach (var match in matches)
+        {
+            yield return new GlobMatch(match);
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously gets the globOptions matches for the specified patterns and ignore patterns.
+    /// </summary>
+    /// <param name="globOptions">The glob pattern to match against.</param>
+    /// <param name="signal">The time to wait before cancelling the operation.</param>
+    /// <returns>An asynchronous enumerable of <see cref="GlobMatch"/> instances.</returns>
+    public static async IAsyncEnumerable<GlobMatch> GetGlobMatchesAsync(
+        this GlobOptions globOptions,
+        [DisallowNull] TimeSpan signal)
+    {
+        var glob = new Glob(
+            globOptions.BasePath,
+            globOptions.IgnoreCase);
+
+        var matches = glob.GetMatchesAsync(
+            (globOptions.Inclusions ?? []).ToArray(),
+            (globOptions.Exclusions ?? []).ToArray(),
+            signal);
+
+        await foreach (var match in matches)
+        {
+            yield return new GlobMatch(match);
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously enumerates the file information of all files that match the specified globOptions patterns.
+    /// </summary>
+    /// <param name="globOptions">The glob pattern to match against.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+    /// <returns>An asynchronous enumerable of <see cref="FileInfo"/> objects that match the specified globOptions patterns.</returns>
+    public static IAsyncEnumerable<FileInfo> GetMatchingFileInfosAsync(
+        this GlobOptions globOptions,
+        CancellationToken cancellationToken = default)
+    {
+        var glob = new Glob(
+            globOptions.BasePath,
+            globOptions.IgnoreCase);
+
+        return glob.GetMatchingFileInfosAsync(
+            (globOptions.Inclusions ?? []).ToArray(),
+            (globOptions.Exclusions ?? []).ToArray(),
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously enumerates the file information of all files that match the specified globOptions patterns.
+    /// </summary>
+    /// <param name="globOptions">The glob pattern to match against.</param>
+    /// <param name="signal">The time to wait before cancelling the operation.</param>
+    /// <returns>An asynchronous enumerable of file information.</returns>
+    public static IAsyncEnumerable<FileInfo> GetMatchingFileInfosAsync(
+        this GlobOptions globOptions,
+        TimeSpan signal)
+    {
+        var glob = new Glob(
+            globOptions.BasePath,
+            globOptions.IgnoreCase);
+
+        return glob.GetMatchingFileInfosAsync(
+            (globOptions.Inclusions ?? []).ToArray(),
+            (globOptions.Exclusions ?? []).ToArray(),
+            signal);
     }
 }

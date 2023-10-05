@@ -116,42 +116,49 @@ public record class GlobOptionsBuilder(
         ValidateArguments(Patterns, IgnorePatterns);
 
         return this;
+    }
 
-        static void ValidateArguments(
-            IEnumerable<string> patterns,
-            IEnumerable<string> ignorePatterns)
+    /// <summary>
+    /// Validates the arguments passed to the method.
+    /// </summary>
+    /// <param name="patterns">The patterns to validate.</param>
+    /// <param name="ignorePatterns">The ignore patterns to validate.</param>
+    /// <exception cref="ArgumentNullException">Thrown when either <paramref name="patterns"/> or <paramref name="ignorePatterns"/> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when any of the patterns or ignore patterns are null, empty or whitespace, or when both <paramref name="patterns"/> and <paramref name="ignorePatterns"/> are empty.</exception>
+    internal static void ValidateArguments(
+        IEnumerable<string> patterns,
+        IEnumerable<string> ignorePatterns)
+    {
+        ArgumentNullException.ThrowIfNull(patterns);
+
+        foreach (var pattern in patterns)
         {
-            ArgumentNullException.ThrowIfNull(patterns);
+            ArgumentException.ThrowIfNullOrWhiteSpace(pattern);
+        }
 
-            foreach (var pattern in patterns)
+        ArgumentNullException.ThrowIfNull(ignorePatterns);
+
+        foreach (var ignorePattern in ignorePatterns)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(ignorePattern);
+        }
+
+        if (IsEmpty(patterns) && IsEmpty(ignorePatterns))
+        {
+            throw new ArgumentException(
+                "At least one pattern or ignore pattern must be specified.");
+        }
+
+        static bool IsEmpty(IEnumerable<string> enumerable)
+        {
+            return enumerable switch
             {
-                ArgumentException.ThrowIfNullOrWhiteSpace(pattern);
-            }
+                Array array => array.Length is 0,
+                IList<string> list => list.Count is 0,
+                ICollection<string> c => c.Count is 0,
 
-            ArgumentNullException.ThrowIfNull(ignorePatterns);
-
-            foreach (var ignorePattern in ignorePatterns)
-            {
-                ArgumentException.ThrowIfNullOrWhiteSpace(ignorePattern);
-            }
-
-            if (IsEmpty(patterns) && IsEmpty(ignorePatterns))
-            {
-                throw new ArgumentException(
-                    "At least one pattern or ignore pattern must be specified.");
-            }
-
-            static bool IsEmpty(IEnumerable<string> enumerable)
-            {
-                return enumerable switch
-                {
-                    Array array => array.Length is 0,
-                    IList<string> list => list.Count is 0,
-                    ICollection<string> c => c.Count is 0,
-
-                    _ => enumerable.Any() is false
-                };
-            }
+                _ => enumerable.Any() is false
+            };
         }
     }
 
