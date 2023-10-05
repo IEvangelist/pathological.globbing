@@ -84,7 +84,7 @@ var options = builder.Build();
 // Get matching file infos.
 var files = glob.GetMatchingFileInfos();
 
-await foreach (var fileInfo in files)
+foreach (var fileInfo in files)
 {
     // Use fileInfo...
 }
