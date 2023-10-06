@@ -13,12 +13,15 @@ internal sealed class GlobOptionsCache(byte maxCapacity = 20)
     private readonly ConcurrentDictionary<CacheKey, Matcher> _cache = new();
     private readonly ConcurrentQueue<CacheKey> _evictionQueue = new();
 
+    ///<inheritdoc cref="GetOrAdd(CacheKey)" />
+    internal Matcher this[CacheKey options] => GetOrAdd(options);
+
     /// <summary>
     /// Gets the matcher for the specified <see cref="CacheKey"/> or adds it to the cache if it doesn't exist.
     /// </summary>
     /// <param name="options">The <see cref="CacheKey"/> to get the matcher for.</param>
     /// <returns>The <see cref="Matcher"/> for the specified <see cref="CacheKey"/>.</returns>
-    internal Matcher GetOrAdd(CacheKey options)
+    private Matcher GetOrAdd(CacheKey options)
     {
         var matcher = _cache.GetOrAdd(
             key: options,
@@ -34,12 +37,10 @@ internal sealed class GlobOptionsCache(byte maxCapacity = 20)
     /// </summary>
     private void EnforceMaxCapacity()
     {
-        while (_cache.Count > maxCapacity)
+        while (_cache.Count > maxCapacity
+            && _evictionQueue.TryDequeue(out var keyToRemove))
         {
-            if (_evictionQueue.TryDequeue(out var keyToRemove))
-            {
-                _cache.TryRemove(keyToRemove, out _);
-            }
+            _ = _cache.TryRemove(keyToRemove, out _);
         }
     }
 }

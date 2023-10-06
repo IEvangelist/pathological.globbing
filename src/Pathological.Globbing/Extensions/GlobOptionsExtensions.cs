@@ -18,7 +18,7 @@ public static class GlobOptionsExtensions
     /// <returns><c>true</c> if the file matches the glob pattern; otherwise, <c>false</c>.</returns>
     public static bool IsMatch(this GlobOptions options, string file)
     {
-        var matcher = _cache.GetOrAdd(options);
+        var matcher = _cache[options];
 
         var result = matcher.Match(file);
 

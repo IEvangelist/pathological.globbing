@@ -1,5 +1,4 @@
-﻿using System.Linq;
-// Copyright (c) David Pine. All rights reserved.
+﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
 namespace Pathological.Globbing;
@@ -159,7 +158,7 @@ public sealed partial class Glob
     {
         var matcher = InitializeMatcher(patterns, ignorePatterns);
 
-        return EnumerateFilesAsync(
+        return EnumerateMatchingFilesAsync(
             filePath => Matches(matcher, BasePath, filePath), cancellationToken);
 
         static bool Matches(Matcher matcher, string basePath, string filePath)
@@ -176,76 +175,32 @@ public sealed partial class Glob
     /// <param name="matches">A function that determines whether a file matches the specified pattern.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>An asynchronous enumerable of file paths that match the specified pattern.</returns>
-    private async IAsyncEnumerable<string> EnumerateFilesAsync(
+    private async IAsyncEnumerable<string> EnumerateMatchingFilesAsync(
         Func<string, bool> matches,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var channel = Channel.CreateUnbounded<string>();
-
-        var writer = channel.Writer;
-
-        var writeTask = Task.Run(
-            function: () => WriteFilesAsync(BasePath, writer, matches, isCaseInsensitive, cancellationToken),
-            cancellationToken);
-
-        var reader = channel.Reader;
-
-        var filePaths = reader.ReadAllAsync(cancellationToken);
-
-        await foreach (var filePath in filePaths)
+        var options = new EnumerationOptions
         {
-            yield return filePath;
-        }
+            RecurseSubdirectories = true,
+            IgnoreInaccessible = true,
+            MatchCasing = isCaseInsensitive
+                ? MatchCasing.CaseInsensitive
+                : MatchCasing.PlatformDefault
+        };
 
-        await writeTask; // Ensure completion (propagating exceptions).
-    }
+        var files = DirectoryAsyncEnumerable.EnumerateFilesAsync(
+            basePath, "*", options, cancellationToken);
 
-    /// <summary>
-    /// Asynchronously writes the file paths that match the specified pattern to the provided <see cref="ChannelWriter{T}"/>.
-    /// </summary>
-    /// <param name="basePath">The base path to search for files.</param>
-    /// <param name="writer">The <see cref="ChannelWriter{T}"/> to write the file paths to.</param>
-    /// <param name="matches">A function that determines whether a file path matches the specified pattern.</param>
-    /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to cancel the operation.</param>
-    /// <param name="isCaseInsensitive">Whether or not to match with case-insensitivity.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    private static async Task WriteFilesAsync(
-        string basePath,
-        ChannelWriter<string> writer,
-        Func<string, bool> matches,
-        bool isCaseInsensitive,
-        CancellationToken cancellationToken)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        try
+        await foreach (var filePath in files.WithCancellation(cancellationToken))
         {
-            var options = new EnumerationOptions
+            if (matches(filePath) is false)
             {
-                RecurseSubdirectories = true,
-                IgnoreInaccessible = true,
-                MatchCasing = isCaseInsensitive
-                    ? MatchCasing.CaseInsensitive
-                    : MatchCasing.PlatformDefault
-            };
-
-            var files = Directory.EnumerateFiles(basePath, "*", options);
-
-            foreach (var filePath in files.Where(matches))
-            {
-                if (await writer.WaitToWriteAsync(cancellationToken))
-                {
-                    writer.TryWrite(filePath);
-                }
+                continue;
             }
 
-            writer.Complete();
-        }
-        catch (Exception ex)
-        {
-            writer.TryComplete(ex);
+            yield return filePath;
         }
     }
 }
