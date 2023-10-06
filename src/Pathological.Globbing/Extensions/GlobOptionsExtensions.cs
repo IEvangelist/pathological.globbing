@@ -8,18 +8,21 @@ namespace Pathological.Globbing.Extensions;
 /// </summary>
 public static class GlobOptionsExtensions
 {
+    private readonly static GlobOptionsCache _cache = new();
+
     /// <summary>
-    /// Executes the evaluation of the globOptions options.
+    /// Determines whether the specified file matches the glob pattern using the specified options.
     /// </summary>
-    /// <param name="options">The <see cref="GlobOptions"/> instance.</param>
-    /// <returns>The <see cref="GlobEvaluationResult"/> instance.</returns>
-    public static GlobEvaluationResult ExecuteEvaluation(this GlobOptions options)
+    /// <param name="options">The globbing options to use.</param>
+    /// <param name="file">The file to match.</param>
+    /// <returns><c>true</c> if the file matches the glob pattern; otherwise, <c>false</c>.</returns>
+    public static bool IsMatch(this GlobOptions options, string file)
     {
-        var matcher = options.ToMatcher();
+        var matcher = _cache.GetOrAdd(options);
 
-        var result = matcher.Execute(directoryInfo: options.ToDirectoryInfo());
+        var result = matcher.Match(file);
 
-        return GlobEvaluationResult.FromPatternMatchingResult(result, options);
+        return result.HasMatches;
     }
 
     /// <summary>
@@ -38,6 +41,20 @@ public static class GlobOptionsExtensions
         matcher.AddExcludePatterns(options.Exclusions ?? []);
 
         return matcher;
+    }
+
+    /// <summary>
+    /// Executes the evaluation of the globOptions options.
+    /// </summary>
+    /// <param name="options">The <see cref="GlobOptions"/> instance.</param>
+    /// <returns>The <see cref="GlobEvaluationResult"/> instance.</returns>
+    public static GlobEvaluationResult ExecuteEvaluation(this GlobOptions options)
+    {
+        var matcher = options.ToMatcher();
+
+        var result = matcher.Execute(directoryInfo: options.ToDirectoryInfo());
+
+        return GlobEvaluationResult.FromPatternMatchingResult(result, options);
     }
 
     /// <summary>

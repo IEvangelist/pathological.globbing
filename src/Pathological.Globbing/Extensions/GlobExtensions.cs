@@ -20,9 +20,8 @@ public static class GlobExtensions
         [DisallowNull] string[] patterns,
         [DisallowNull] string[] ignorePatterns)
     {
-        var matches = glob.GetMatches(patterns, ignorePatterns);
-
-        return matches.Select(match => new GlobMatch(match));
+        return glob.GetMatches(patterns, ignorePatterns)
+            .Select(match => new GlobMatch(match));
     }
 
     /// <summary>
@@ -37,10 +36,8 @@ public static class GlobExtensions
         [DisallowNull] string[] patterns,
         [DisallowNull] string[] ignorePatterns)
     {
-        foreach (var match in glob.GetGlobMatches(patterns, ignorePatterns))
-        {
-            yield return match.ToFileInfo(glob);
-        }
+        return glob.GetGlobMatches(patterns, ignorePatterns)
+            .Select(match => match.ToFileInfo(glob));
     }
 
     /// <summary>
@@ -101,7 +98,9 @@ public static class GlobExtensions
         [DisallowNull] string[] ignorePatterns,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await foreach (var match in glob.GetGlobMatchesAsync(patterns, ignorePatterns, cancellationToken))
+        var matches = glob.GetGlobMatchesAsync(patterns, ignorePatterns, cancellationToken);
+
+        await foreach (var match in matches)
         {
             yield return match.ToFileInfo(glob);
         }
@@ -121,7 +120,9 @@ public static class GlobExtensions
         [DisallowNull] string[] ignorePatterns,
         TimeSpan signal)
     {
-        await foreach (var match in glob.GetGlobMatchesAsync(patterns, ignorePatterns, signal))
+        var matches = glob.GetGlobMatchesAsync(patterns, ignorePatterns, signal);
+
+        await foreach (var match in matches)
         {
             yield return match.ToFileInfo(glob);
         }

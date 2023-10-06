@@ -1,4 +1,5 @@
-﻿// Copyright (c) David Pine. All rights reserved.
+﻿using System.Linq;
+// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
 namespace Pathological.Globbing;
@@ -151,18 +152,15 @@ public sealed partial class Glob
     /// <param name="ignorePatterns">The patterns to ignore.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>An <see cref="IAsyncEnumerable{T}"/> that yields all file and directory paths that match the specified globbing patterns, while ignoring the specified ignore patterns.</returns>
-    public async IAsyncEnumerable<string> GetMatchesAsync(
+    public IAsyncEnumerable<string> GetMatchesAsync(
         string[] patterns,
         string[] ignorePatterns,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
     {
         var matcher = InitializeMatcher(patterns, ignorePatterns);
 
-        await foreach (var filePath in EnumerateFilesAsync(
-            filePath => Matches(matcher, BasePath, filePath), cancellationToken))
-        {
-            yield return filePath;
-        }
+        return EnumerateFilesAsync(
+            filePath => Matches(matcher, BasePath, filePath), cancellationToken);
 
         static bool Matches(Matcher matcher, string basePath, string filePath)
         {
