@@ -13,7 +13,7 @@ public class GlobOptionsCacheTests
         var cache = new GlobOptionsCache();
 
         // Act
-        var matcher = cache.GetOrAdd(options);
+        var matcher = cache[options];
 
         // Assert
         Assert.NotNull(matcher);
@@ -28,8 +28,8 @@ public class GlobOptionsCacheTests
         var cache = new GlobOptionsCache();
 
         // Act
-        var matcher1 = cache.GetOrAdd(options);
-        var matcher2 = cache.GetOrAdd(options);
+        var matcher1 = cache[options];
+        var matcher2 = cache[options];
 
         // Assert
         Assert.Same(matcher1, matcher2);
@@ -46,9 +46,9 @@ public class GlobOptionsCacheTests
         var options3 = new GlobOptions { IgnoreCase = true };
 
         // Act
-        var matcher1 = cache.GetOrAdd(options1);
-        var matcher2 = cache.GetOrAdd(options2);
-        var matcher3 = cache.GetOrAdd(options3);
+        var matcher1 = cache[options1];
+        var matcher2 = cache[options2];
+        var matcher3 = cache[options3];
 
         // Assert
         Assert.NotNull(matcher1);
