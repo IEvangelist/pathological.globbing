@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.8" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.10" />
     <PackageReference Include="Glob.cs" Version="5.1.1253" />
   </ItemGroup>
 
