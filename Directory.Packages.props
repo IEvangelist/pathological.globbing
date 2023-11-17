@@ -1,5 +1,23 @@
 <Project>
   <PropertyGroup>
-    <RuntimeVersion>8.0.0-rc.1.23419.4</RuntimeVersion>
+    <RuntimeVersion>8.0.0</RuntimeVersion>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(RuntimeVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="$(RuntimeVersion)" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+
+    <PackageVersion Include="GitHubActionsTestLogger" Version="2.3.3" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageVersion Include="MinVer" Version="5.0.0-alpha.1" />
+
+    <PackageVersion Include="xunit" Version="2.6.1" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.3" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.0" />
+
+    <PackageVersion Include="BenchmarkDotNet" Version="0.13.10" />
+    <PackageVersion Include="Glob.cs" Version="5.1.1253" />
+  </ItemGroup>
 </Project>

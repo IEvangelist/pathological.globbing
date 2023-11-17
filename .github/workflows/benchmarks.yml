@@ -16,7 +16,6 @@ jobs:
       - uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
-          dotnet-quality: preview
 
       - name: Run benchmark step
         run: cd benchmarks/Pathological.Globbing.Benchmarks && dotnet run -c Release --exporters json --filter '*'
