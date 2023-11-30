@@ -39,7 +39,7 @@ foreach (var filePath in files)
 }
 ```
 
-> **Note**
+> [!NOTE]
 > There are various extensions methods that expose, in addition to a `string` representing the fully qualified file path of the matched file, a `GlobMatch` instance. The `GlobMatch` instance provides additional information about the matched file, it can also be used to easily convert to a `FileInfo` type as well.
 
 ### 📂 Streaming API
@@ -60,8 +60,8 @@ await foreach (var file in files)
 }
 ```
 
-> **Important**
-> All streaming APIs support `CancellationToken` for cancellation, or `TimeSpan` for signaling cancellation after a certain amount of time.
+> [!IMPORTANT]
+> All streaming APIs support `CancellationToken` for signaling a manual cancellation, or `TimeSpan` for signaling cancellation after a certain amount of time.
 
 ### ☑️ Builder-pattern fluent API
 
