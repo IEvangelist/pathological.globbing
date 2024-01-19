@@ -23,6 +23,7 @@ jobs:
       matrix:
         project:
         - Pathological.Globbing
+        - Pathological.ProjectSystem
     steps:
     
     - name: Print tag ref

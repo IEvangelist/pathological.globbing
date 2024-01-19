@@ -32,7 +32,7 @@ internal sealed class DirectoryAsyncEnumerable
 
         while (await Task.Run(function: enumerator.MoveNext, cancellationToken))
         {
-            yield return enumerator.Current;
+            yield return Path.GetFullPath(enumerator.Current);
         }
     }
 }

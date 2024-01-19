@@ -49,7 +49,7 @@ To use the streaming API, call any of the available `IAsyncEnumerable<T>` return
 ```csharp
 using Pathological.Globbing;
 
-var glob = new Glob(BasePath: "../");
+var glob = new Glob(basePath: "../");
 
 // All js files, but don't look in node_modules
 var files = glob.GetMatchesAsync("**/*.js", "node_modules/**");
