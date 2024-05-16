@@ -49,7 +49,9 @@ internal sealed class DefaultDiscoveryService(
     {
         var glob = new Glob(basePath: rootPath);
 
-        await foreach (var solutionPath in glob.GetMatchesAsync("**/*.sln"))
+        string[] solutionPatterns = ["**/*.sln", "**/*.slnx"];
+
+        await foreach (var solutionPath in glob.GetMatchesAsync(solutionPatterns))
         {
             yield return await solutionReader.ReadSolutionAsync(solutionPath);
         }
@@ -59,7 +61,9 @@ internal sealed class DefaultDiscoveryService(
     {
         var glob = new Glob(basePath: rootPath);
 
-        await foreach (var projectPath in glob.GetMatchesAsync(["**/*.csproj", "**/*.fsproj", "**/*.vbproj"]))
+        string[] projectPatterns = ["**/*.csproj", "**/*.fsproj", "**/*.vbproj"];
+
+        await foreach (var projectPath in glob.GetMatchesAsync(projectPatterns))
         {
             yield return await projectReader.ReadProjectAsync(projectPath);
         }
@@ -69,7 +73,7 @@ internal sealed class DefaultDiscoveryService(
     {
         var glob = new Glob(basePath: rootPath);
 
-        await foreach (var dockerfilePath in glob.GetMatchesAsync(["**/Dockerfile"]))
+        await foreach (var dockerfilePath in glob.GetMatchesAsync("**/Dockerfile"))
         {
             yield return await dockerfileReader.ReadDockerfileAsync(dockerfilePath);
         }

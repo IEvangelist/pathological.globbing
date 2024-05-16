@@ -3,6 +3,9 @@
 
 namespace Pathological.ProjectSystem.Models;
 
+/// <summary>
+/// Represents the result of a discovery operation.
+/// </summary>
 public record class DiscoveryResultSet
 {
     /// <summary>

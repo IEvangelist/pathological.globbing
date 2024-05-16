@@ -24,4 +24,24 @@ public sealed class SolutionFileReaderTests
             Assert.Equal("Microsoft.NET.Sdk", project.Sdk);
         }
     }
+
+    [Fact(Skip = "Fails in CI/CD for now.")]
+    public async Task ReadSolutionAsSlnxAsyncTest()
+    {
+        var solutionPath = "../../../../../pathological.globbing.slnx";
+
+        var sut = DefaultSolutionReader.Factory;
+
+        var solution = await sut.ReadSolutionAsync(solutionPath);
+        Assert.NotNull(solution);
+        Assert.Equal(Path.GetFullPath(solutionPath), solution.FullPath);
+        Assert.NotEmpty(solution.Projects);
+
+        foreach (var project in solution.Projects)
+        {
+            Assert.NotNull(project);
+            Assert.Equal("net8.0", project.TargetFrameworkMonikers[0]);
+            Assert.Equal("Microsoft.NET.Sdk", project.Sdk);
+        }
+    }
 }

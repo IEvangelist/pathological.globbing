@@ -3,6 +3,9 @@
 
 namespace Pathological.ProjectSystem.Models;
 
+/// <summary>
+/// Represents a project file.
+/// </summary>
 [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 public record class Project
 {
@@ -48,6 +51,18 @@ public record class Project
     public string[] TargetFrameworkMonikers =>
         RawTargetFrameworkMonikers?.Split(';', StringSplitOptions.RemoveEmptyEntries)
         ?? [];
+
+    /// <summary>
+    /// The language of the project.
+    /// </summary>
+    public string Language => Extension switch
+    {
+        ".csproj" => "C#",
+        ".fsproj" => "F#",
+        ".vbproj" => "Visual Basic",
+
+        _ => "Unknown"
+    };
 
     private string GetDebuggerDisplay()
     {

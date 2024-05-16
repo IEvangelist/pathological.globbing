@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="benchmarks\Pathological.Globbing.Benchmarks\Pathological.Globbing.Benchmarks.csproj" />
+  <Project Path="src\Pathological.Globbing\Pathological.Globbing.csproj" />
+  <Project Path="src\Pathological.ProjectSystem\Pathological.ProjectSystem.csproj" />
+  <Project Path="tests\Pathological.Globbing.Tests\Pathological.Globbing.Tests.csproj" />
+  <Project Path="tests\Pathological.ProjectSystem.Tests\Pathological.ProjectSystem.Tests.csproj" />
+</Solution>
