@@ -29,7 +29,8 @@ internal sealed partial class DefaultProjectReader : IProjectReader
     {
         var (index, rawTargetFrameworkMonikers) = MatchExpression(TargetFrameworkRegex(), projectContent, "tfm");
 
-        if (IsMSBuildExpression(rawTargetFrameworkMonikers))
+        if (IsMSBuildExpression(rawTargetFrameworkMonikers) ||
+            string.IsNullOrWhiteSpace(rawTargetFrameworkMonikers))
         {
             var (_, targetFrameworkMonikers) = await TryResolvingDirectoryBuildPropsAsync(
                 rawTargetFrameworkMonikers, project.FullPath);
@@ -56,16 +57,25 @@ internal sealed partial class DefaultProjectReader : IProjectReader
 
         var directoryBuildProps = directory.TraverseDirectoriesAndFindFile("Directory.Build.props");
 
-        if (string.IsNullOrWhiteSpace(rawTargetFrameworkMonikers) is false &&
-            File.Exists(directoryBuildProps))
+        if (File.Exists(directoryBuildProps))
         {
-            var (_, key) = MatchExpression(
+            var buildPropsContent = await File.ReadAllTextAsync(directoryBuildProps);
+
+            if (string.IsNullOrWhiteSpace(rawTargetFrameworkMonikers))
+            {
+                return MatchExpression(TargetFrameworkRegex(), buildPropsContent, "tfm");
+            }
+            else
+            {
+                // Gets the MSBuild expression key:
+                //   <TargetFrameworks>$(DefaultTargetFrameworks)</TargetFrameworks>
+                //   In this example, the key is "DefaultTargetFrameworks"
+                var (_, key) = MatchExpression(
                 MSBuildExpressionKeyRegex(), rawTargetFrameworkMonikers, "key");
 
-            var content = await File.ReadAllTextAsync(directoryBuildProps);
-
-            return MatchExpression(
-                new Regex($"<{key}>(?<value>.+)</{key}>"), content, "value");
+                return MatchExpression(
+                    new Regex($"<{key}>(?<value>.+)</{key}>"), buildPropsContent, "value");
+            }
         }
 
         return (-1, rawTargetFrameworkMonikers);
