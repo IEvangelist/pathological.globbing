@@ -107,7 +107,7 @@ public sealed partial class GlobTests(
             foreach (var file in files)
             {
                 var filePath = Path.Combine(folderPath, file);
-                await File.WriteAllTextAsync(filePath, null);
+                await File.WriteAllTextAsync(filePath, contents: "");
             }
         }
 
