@@ -6,9 +6,32 @@ namespace Pathological.ProjectSystem.Tests;
 public sealed class DockerfileReaderTests
 {
     [Fact]
+    public async Task ReadDockerfileCorrectlyParsesImageDetails()
+    {
+        var dockerfilePath = "Dockerfile.0";
+
+        try
+        {
+            await File.WriteAllTextAsync(dockerfilePath, TestInput.DockerfileWithWeirdBits);
+
+            var sut = DefaultDockerfileReader.Factory;
+
+            var dockerfile = await sut.ReadDockerfileAsync(dockerfilePath);
+
+            Assert.NotNull(dockerfile);
+            Assert.Null(dockerfile.ImageDetails);
+            Assert.True(dockerfile.IsNonDotNetBasedImage);
+        }
+        finally
+        {
+            File.Delete(dockerfilePath);
+        }
+    }
+
+    [Fact]
     public async Task ReadDockerfileAndParsesCorrectly()
     {
-        var dockerfilePath = "Dockerfile";
+        var dockerfilePath = "Dockerfile.1";
 
         try
         {

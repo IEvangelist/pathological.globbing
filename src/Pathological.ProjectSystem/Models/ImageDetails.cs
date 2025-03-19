@@ -10,7 +10,7 @@ namespace Pathological.ProjectSystem.Models;
 /// <param name="Tag">The image tag.</param>
 /// <param name="TargetFrameworkMoniker">The target framework moniker.</param>
 /// <param name="LineNumber">The line number where the image details was parsed on.</param>
-public readonly record struct ImageDetails(
+public sealed record class ImageDetails(
     string Image,
     string Tag,
     string TargetFrameworkMoniker,

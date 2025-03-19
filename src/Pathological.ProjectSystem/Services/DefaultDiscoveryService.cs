@@ -75,7 +75,14 @@ internal sealed class DefaultDiscoveryService(
 
         await foreach (var dockerfilePath in glob.GetMatchesAsync("**/Dockerfile"))
         {
-            yield return await dockerfileReader.ReadDockerfileAsync(dockerfilePath);
+            var dockerfile = await dockerfileReader.ReadDockerfileAsync(dockerfilePath);
+
+            if (dockerfile.IsNonDotNetBasedImage)
+            {
+                continue;
+            }
+
+            yield return dockerfile;
         }
     }
 }

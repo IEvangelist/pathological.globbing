@@ -97,6 +97,12 @@ internal static class TestInput
         </Project>
         """;
 
+    internal const string DockerfileWithWeirdBits = """
+        FROM microsoft/windowsservercore
+        ADD publish/ /
+        ENTRYPOINT ConsoleRandomAnswerGenerator.exe
+        """;
+
     internal const string DockerfileWithMultipleTfms = """
         FROM mcr.microsoft.com/dotnet/aspnet:3.1.30-bionic AS build-env
         WORKDIR /App
