@@ -14,16 +14,17 @@ internal sealed class DefaultDiscoveryService(
         DefaultProjectReader.Factory,
         DefaultSolutionReader.Factory);
 
-    public async ValueTask<DiscoveryResultSet> DiscoverAllAsync(string rootPath)
+    public async ValueTask<DiscoveryResultSet> DiscoverAllAsync(
+        string rootPath, DiscoveryOptions? discoveryOptions = null)
     {
         ConcurrentBag<Solution> solutions = [];
         ConcurrentBag<Project> projects = [];
         ConcurrentBag<Dockerfile> dockerfiles = [];
 
         await Task.WhenAll(
-            AccumulateResourcesAsync(GetSolutionsAsync(rootPath), solutions),
-            AccumulateResourcesAsync(GetProjectsAsync(rootPath), projects),
-            AccumulateResourcesAsync(GetDockerfilesAsync(rootPath), dockerfiles));
+            AccumulateResourcesAsync(GetSolutionsAsync(rootPath, discoveryOptions), solutions),
+            AccumulateResourcesAsync(GetProjectsAsync(rootPath, discoveryOptions), projects),
+            AccumulateResourcesAsync(GetDockerfilesAsync(rootPath, discoveryOptions), dockerfiles));
 
         var standaloneProjects = projects.Except(
             solutions.SelectMany(static sln => sln.Projects));
@@ -45,35 +46,40 @@ internal sealed class DefaultDiscoveryService(
         }
     }
 
-    private async IAsyncEnumerable<Solution> GetSolutionsAsync(string rootPath)
+    private async IAsyncEnumerable<Solution> GetSolutionsAsync(
+        string rootPath, DiscoveryOptions? discoveryOptions = null)
     {
         var glob = new Glob(basePath: rootPath);
 
-        string[] solutionPatterns = ["**/*.sln", "**/*.slnx"];
-
-        await foreach (var solutionPath in glob.GetMatchesAsync(solutionPatterns))
+        await foreach (var solutionPath in glob.GetMatchesAsync(
+            patterns: [..discoveryOptions?.SolutionPatterns ?? DefaultPatterns.SolutionPatterns],
+            ignorePatterns: [.. discoveryOptions?.SolutionIgnorePatterns ?? []]))
         {
             yield return await solutionReader.ReadSolutionAsync(solutionPath);
         }
     }
 
-    private async IAsyncEnumerable<Project> GetProjectsAsync(string rootPath)
+    private async IAsyncEnumerable<Project> GetProjectsAsync(
+        string rootPath, DiscoveryOptions? discoveryOptions = null)
     {
         var glob = new Glob(basePath: rootPath);
 
-        string[] projectPatterns = ["**/*.csproj", "**/*.fsproj", "**/*.vbproj"];
-
-        await foreach (var projectPath in glob.GetMatchesAsync(projectPatterns))
+        await foreach (var projectPath in glob.GetMatchesAsync(
+            patterns: [.. discoveryOptions?.ProjectPatterns ?? DefaultPatterns.ProjectPatterns],
+            ignorePatterns: [.. discoveryOptions?.ProjectIgnorePatterns ?? []]))
         {
             yield return await projectReader.ReadProjectAsync(projectPath);
         }
     }
 
-    private async IAsyncEnumerable<Dockerfile> GetDockerfilesAsync(string rootPath)
+    private async IAsyncEnumerable<Dockerfile> GetDockerfilesAsync(
+        string rootPath, DiscoveryOptions? discoveryOptions = null)
     {
         var glob = new Glob(basePath: rootPath);
 
-        await foreach (var dockerfilePath in glob.GetMatchesAsync("**/Dockerfile"))
+        await foreach (var dockerfilePath in glob.GetMatchesAsync(
+            patterns: [.. discoveryOptions?.DockerfilePatterns ?? DefaultPatterns.DockerfilePatterns],
+            ignorePatterns: [..discoveryOptions?.DockerfileIgnorePatterns ?? []]))
         {
             var dockerfile = await dockerfileReader.ReadDockerfileAsync(dockerfilePath);
 
